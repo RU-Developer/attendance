@@ -2,6 +2,8 @@ package yonam.attendence.web.login;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +17,8 @@ import yonam.attendence.web.SessionConst;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -48,6 +52,28 @@ public class LoginController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginTeacher);
 
         return "redirect:" + redirectURL;
+    }
+
+    @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public LoginResult loginAndroid(@Validated @ModelAttribute("loginForm") LoginForm form,
+                                    BindingResult bindingResult,
+                                    @RequestParam(defaultValue = "/") String redirectURL,
+                                    HttpServletRequest request) {
+
+        if (bindingResult.hasErrors()) {
+            return new LoginResult(false);
+        }
+
+        Teacher loginTeacher = loginService.login(form.getLoginId(), form.getPassword());
+
+        if (loginTeacher == null) {
+            return new LoginResult(false);
+        }
+
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginTeacher);
+
+        return new LoginResult(true);
     }
 
     @PostMapping("/logout")
