@@ -17,7 +17,7 @@ public class TeacherRepository {
 
     private final DataSource dataSource;
 
-    public Teacher save(Teacher teacher) throws SQLException {
+    public Teacher save(Teacher teacher) {
         String sql = "INSERT INTO teacher(id, password, name) VALUES (?, ?, ?)";
 
         Connection con = null;
@@ -34,13 +34,14 @@ public class TeacherRepository {
             return teacher;
         } catch (SQLException e) {
             log.error("db error", e);
-            throw e;
         } finally {
             close(con, pstmt, null);
         }
+
+        return teacher;
     }
 
-    public Teacher findById(String id) throws SQLException {
+    public Teacher findById(String id) {
         String sql = "SELECT * FROM teacher WHERE id = ?";
 
         Connection con = null;
@@ -65,13 +66,14 @@ public class TeacherRepository {
             throw new NoSuchElementException("teacher not found id = " + id);
         } catch (SQLException e) {
             log.error("db error", e);
-            throw e;
         } finally {
             close(con, pstmt, rs);
         }
+
+        return null;
     }
 
-    public void update(Teacher teacher) throws SQLException {
+    public void update(Teacher teacher) {
         String sql = "UPDATE teacher SET password = ?, name = ? WHERE id = ?";
 
         Connection con = null;
@@ -87,13 +89,12 @@ public class TeacherRepository {
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
             log.error("db error", e);
-            throw e;
         } finally {
             close(con, pstmt, null);
         }
     }
 
-    public void delete(String id) throws SQLException {
+    public void delete(String id) {
         String sql = "DELETE FROM teacher WHERE id = ?";
 
         Connection con = null;
@@ -107,7 +108,6 @@ public class TeacherRepository {
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
             log.error("db error", e);
-            throw e;
         } finally {
             close(con, pstmt, null);
         }
