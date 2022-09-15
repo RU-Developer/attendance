@@ -1,13 +1,11 @@
 package yonam.attendence.web.teacher;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.domain.teacher.TeacherRepository;
 
@@ -31,5 +29,16 @@ public class TeacherController {
 
         teacherRepository.save(teacher);
         return "redirect:/";
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    public TeacherAddResult saveAndroid(@Validated @ModelAttribute Teacher teacher, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new TeacherAddResult(false);
+        }
+
+        teacherRepository.save(teacher);
+        return new TeacherAddResult(true);
     }
 }

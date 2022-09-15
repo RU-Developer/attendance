@@ -1,16 +1,16 @@
-package yonam.attendence.web.login;
+package yonam.attendence.web.teacher;
 
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 
 @Data
-public class LoginResult {
+public class TeacherAddResult {
 
     @NotEmpty
     private boolean success;
 
-    public LoginResult(boolean success) {
+    public TeacherAddResult(boolean success) {
         this.success = success;
     }
 }

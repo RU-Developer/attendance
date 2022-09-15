@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import yonam.attendence.web.argumentresolver.LoginTeacherArgumentResolver;
 import yonam.attendence.web.interceptor.LoginCheckInterceptor;
-import yonam.attendence.web.interceptor.LoginInterceptor;
 
 import javax.sql.DataSource;
 
@@ -38,13 +37,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor())
-                .order(1)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/css/**", "/*.ico", "/error");
-
         registry.addInterceptor(new LoginCheckInterceptor())
-                .order(2)
+                .order(1)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/", "/teachers/add", "/login", "logout",
                         "/css/**", "/*.ico", "/error");
