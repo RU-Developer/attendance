@@ -1,20 +1,22 @@
 package yonam.attendence.web.teacher;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import yonam.attendence.domain.teacher.Teacher;
-import yonam.attendence.domain.teacher.TeacherRepository;
+import yonam.attendence.domain.teacher.TeacherService;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/teachers")
 public class TeacherController {
 
-    private final TeacherRepository teacherRepository;
+    private final TeacherService teacherService;
 
     @GetMapping("/add")
     public String addForm(@ModelAttribute("teacher") Teacher teacher) {
@@ -27,7 +29,7 @@ public class TeacherController {
             return "teachers/addTeacherForm";
         }
 
-        teacherRepository.save(teacher);
+        teacherService.save(teacher);
         return "redirect:/";
     }
 
@@ -38,7 +40,7 @@ public class TeacherController {
             return new TeacherAddResult(false);
         }
 
-        teacherRepository.save(teacher);
+        teacherService.save(teacher);
         return new TeacherAddResult(true);
     }
 }
