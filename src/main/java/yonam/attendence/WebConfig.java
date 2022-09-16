@@ -9,7 +9,9 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import yonam.attendence.web.argumentresolver.LoginTeacherArgumentResolver;
+import yonam.attendence.web.interceptor.HealthCheckInterceptor;
 import yonam.attendence.web.interceptor.LoginCheckInterceptor;
+import yonam.attendence.web.interceptor.UrlCheckInterceptor;
 
 import javax.sql.DataSource;
 
@@ -37,10 +39,20 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginCheckInterceptor())
+        registry.addInterceptor(new HealthCheckInterceptor())
                 .order(1)
+                .addPathPatterns("/healthcheck");
+
+        registry.addInterceptor(new UrlCheckInterceptor())
+                .order(2)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/healthcheck", "/error");
+
+        registry.addInterceptor(new LoginCheckInterceptor())
+                .order(3)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/", "/teachers/add", "/login", "logout",
-                        "/css/**", "/*.ico", "/error");
+                        "/css/**", "/*.ico", "/error", "/healthcheck");
+
     }
 }
