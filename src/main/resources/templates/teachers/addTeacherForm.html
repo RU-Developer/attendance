@@ -20,7 +20,7 @@
         <h2>회원 가입</h2>
     </div>
     <h4 class="mb-3">회원 정보 입력</h4>
-    <form action="" th:action th:object="${teacher}" method="post">
+    <form action="" th:action th:object="${teacher}" method="post" id="form">
         <div th:if="${#fields.hasGlobalErrors()}">
             <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
         </div>
@@ -36,6 +36,11 @@
                    class="form-control"
                    th:errorclass="field-error" />
             <div class="field-error" th:errors="*{password}" />
+        </div>
+        <div>
+            <label for="password-check">비밀번호 확인</label>
+            <input type="password" id="password-check"
+                   class="form-control"/>
         </div>
         <div>
             <label for="name">이름</label>
@@ -56,5 +61,21 @@
         </div>
     </form>
 </div>
+
+<script>
+    const form = document.querySelector("#form");
+    const password = document.querySelector("#password");
+    const passwordCheck = document.querySelector("#password-check");
+    form.addEventListener("submit", evt => {
+        evt.preventDefault();
+
+        if (password.value === passwordCheck.value) {
+            form.submit();
+            return;
+        }
+
+        alert("비밀번호와 비밀번호 확인 값이 동일하지 않습니다.");
+    });
+</script>
 </body>
 </html>
