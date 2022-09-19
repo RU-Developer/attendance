@@ -10,7 +10,11 @@ public class TeacherAddResult {
     @NotEmpty
     private boolean success;
 
-    public TeacherAddResult(boolean success) {
+    @NotEmpty
+    private String message;
+
+    public TeacherAddResult(boolean success, String message) {
         this.success = success;
+        this.message = message;
     }
 }

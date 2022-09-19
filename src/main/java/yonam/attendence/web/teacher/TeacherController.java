@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import yonam.attendence.domain.teacher.Teacher;
@@ -29,7 +30,13 @@ public class TeacherController {
             return "teachers/addTeacherForm";
         }
 
-        teacherService.save(teacher);
+        TeacherAddResult save = teacherService.save(teacher);
+        if (!save.isSuccess()) {
+            bindingResult.rejectValue("id", null,
+                    new TeacherAddResultConstToMessage().resolveMessage(save.getMessage()));
+            return "teachers/addTeacherForm";
+        }
+
         return "redirect:/";
     }
 
@@ -37,10 +44,16 @@ public class TeacherController {
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public TeacherAddResult saveAndroid(@Validated @ModelAttribute Teacher teacher, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return new TeacherAddResult(false);
+            StringBuilder sb = new StringBuilder();
+
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                sb.append(error.getDefaultMessage());
+                sb.append("\n");
+            }
+
+            return new TeacherAddResult(false, sb.toString());
         }
 
-        teacherService.save(teacher);
-        return new TeacherAddResult(true);
+        return teacherService.save(teacher);
     }
 }
