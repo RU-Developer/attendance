@@ -1,5 +1,6 @@
 package yonam.attendence;
 
+import net.nurigo.java_sdk.api.Message;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -8,6 +9,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import yonam.attendence.domain.message.CoolsmsConnectionConst;
 import yonam.attendence.web.argumentresolver.LoginTeacherArgumentResolver;
 import yonam.attendence.web.interceptor.HealthCheckInterceptor;
 import yonam.attendence.web.interceptor.LoginCheckInterceptor;
@@ -18,6 +20,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static yonam.attendence.connection.ConnectionConst.*;
+import static yonam.attendence.domain.message.CoolsmsConnectionConst.*;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -25,6 +28,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public DataSource dataSource() {
         return new DriverManagerDataSource(URL, USERNAME, PASSWORD);
+    }
+
+    @Bean
+    public Message message() {
+        return new Message(API_KEY, API_SECRET);
     }
 
     @Bean

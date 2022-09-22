@@ -8,6 +8,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import yonam.attendence.domain.message.MessageForm;
+import yonam.attendence.domain.message.MessageResult;
+import yonam.attendence.domain.message.MessageService;
 import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.domain.teacher.TeacherService;
 
@@ -18,6 +21,7 @@ import yonam.attendence.domain.teacher.TeacherService;
 public class TeacherController {
 
     private final TeacherService teacherService;
+    private final MessageService messageService;
 
     @GetMapping("/add")
     public String addForm(@ModelAttribute("teacher") Teacher teacher) {
@@ -55,5 +59,22 @@ public class TeacherController {
         }
 
         return teacherService.save(teacher);
+    }
+
+    @ResponseBody
+    @PostMapping("/sendMessage")
+    public MessageResult sendMessage(@Validated MessageForm messageForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder sb = new StringBuilder();
+
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                sb.append(error.getDefaultMessage());
+                sb.append("\n");
+            }
+
+            return new MessageResult(false, sb.toString());
+        }
+
+        return messageService.send(messageForm);
     }
 }
