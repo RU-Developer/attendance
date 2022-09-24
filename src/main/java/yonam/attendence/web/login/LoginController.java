@@ -35,7 +35,7 @@ public class LoginController {
             return "login/loginForm";
         }
 
-        Teacher loginTeacher = loginService.login(form.getLoginId(), form.getPassword());
+        Teacher loginTeacher = loginService.login(form);
 
         if (loginTeacher == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 일치하지 않습니다.");
@@ -43,7 +43,7 @@ public class LoginController {
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginTeacher);
+        session.setAttribute(SessionConst.LOGIN_TEACHER, loginTeacher);
 
         return "redirect:" + redirectURL;
     }
@@ -57,21 +57,21 @@ public class LoginController {
             return new LoginResult(false);
         }
 
-        Teacher loginTeacher = loginService.login(form.getLoginId(), form.getPassword());
+        Teacher loginTeacher = loginService.login(form);
 
         if (loginTeacher == null) {
             return new LoginResult(false);
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginTeacher);
+        session.setAttribute(SessionConst.LOGIN_TEACHER, loginTeacher);
 
         return new LoginResult(true);
     }
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
 
         if (session != null) {
             session.invalidate();

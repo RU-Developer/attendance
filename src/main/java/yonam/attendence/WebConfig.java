@@ -10,9 +10,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import yonam.attendence.domain.message.CoolsmsConnectionConst;
+import yonam.attendence.web.argumentresolver.LoginParentArgumentResolver;
 import yonam.attendence.web.argumentresolver.LoginTeacherArgumentResolver;
 import yonam.attendence.web.interceptor.HealthCheckInterceptor;
 import yonam.attendence.web.interceptor.LoginCheckInterceptor;
+import yonam.attendence.web.interceptor.LoginParentCheckInterceptor;
 import yonam.attendence.web.interceptor.UrlCheckInterceptor;
 
 import javax.sql.DataSource;
@@ -43,6 +45,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new LoginTeacherArgumentResolver());
+        resolvers.add(new LoginParentArgumentResolver());
     }
 
     @Override
@@ -59,8 +62,12 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginCheckInterceptor())
                 .order(3)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/", "/teachers/add", "/login", "logout",
-                        "/css/**", "/*.ico", "/error", "/healthcheck");
+                .excludePathPatterns("/", "/teachers/add", "/login", "/logout",
+                        "/css/**", "/*.ico", "/error", "/healthcheck", "/parents/**");
 
+        registry.addInterceptor(new LoginParentCheckInterceptor())
+                .order(4)
+                .addPathPatterns("/parents/**")
+                .excludePathPatterns("/parents/login");
     }
 }

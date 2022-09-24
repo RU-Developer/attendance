@@ -5,19 +5,20 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import yonam.attendence.domain.teacher.Teacher;
+import yonam.attendence.domain.parent.Parent;
 import yonam.attendence.web.SessionConst;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-public class LoginTeacherArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginParentArgumentResolver implements HandlerMethodArgumentResolver {
+
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         boolean hasLoginAnnotation = parameter.hasParameterAnnotation(Login.class);
-        boolean hasTeacherType = Teacher.class.isAssignableFrom(parameter.getParameterType());
+        boolean hasParentType = Parent.class.isAssignableFrom(parameter.getParameterType());
 
-        return hasLoginAnnotation && hasTeacherType;
+        return hasLoginAnnotation && hasParentType;
     }
 
     @Override
@@ -29,6 +30,6 @@ public class LoginTeacherArgumentResolver implements HandlerMethodArgumentResolv
             return null;
         }
 
-        return session.getAttribute(SessionConst.LOGIN_TEACHER);
+        return session.getAttribute(SessionConst.LOGIN_PARENT);
     }
 }

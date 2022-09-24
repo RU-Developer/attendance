@@ -1,4 +1,4 @@
-package yonam.attendence.domain.teacher;
+package yonam.attendence.domain.parent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +12,12 @@ import java.sql.*;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class TeacherRepository {
+public class ParentRepository {
 
     private final DataSource dataSource;
 
-    public Teacher save(Teacher teacher) throws SQLException {
-        String sql = "INSERT INTO teacher(id, password, name) VALUES (?, ?, ?)";
+    public Parent save(Parent parent) throws SQLException {
+        String sql = "INSERT INTO parent(id, phone) VALUES (?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -25,12 +25,11 @@ public class TeacherRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, teacher.getId());
-            pstmt.setString(2, teacher.getPassword());
-            pstmt.setString(3, teacher.getName());
+            pstmt.setLong(1, parent.getId());
+            pstmt.setString(2, parent.getPhone());
             pstmt.executeUpdate();
 
-            return teacher;
+            return parent;
         } catch (SQLException e) {
             log.error("db error", e);
             throw e;
@@ -39,8 +38,8 @@ public class TeacherRepository {
         }
     }
 
-    public Teacher findById(String id) {
-        String sql = "SELECT * FROM teacher WHERE id = ?";
+    public Parent findById(Long id) {
+        String sql = "SELECT * FROM parent WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -49,18 +48,16 @@ public class TeacherRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, id);
+            pstmt.setLong(1, id);
 
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                Teacher teacher = new Teacher();
-                teacher.setId(rs.getString("id"));
-                teacher.setPassword(rs.getString("password"));
-                teacher.setName(rs.getString("name"));
-                return teacher;
+                Parent parent = new Parent();
+                parent.setId(rs.getLong("id"));
+                parent.setPhone(rs.getString("phone"));
+                return parent;
             }
-
         } catch (SQLException e) {
             log.error("db error", e);
         } finally {
@@ -70,8 +67,8 @@ public class TeacherRepository {
         return null;
     }
 
-    public void update(Teacher teacher) {
-        String sql = "UPDATE teacher SET password = ?, name = ? WHERE id = ?";
+    public void update(Parent parent) {
+        String sql = "UPDATE parent SET phone = ? WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -79,20 +76,19 @@ public class TeacherRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, teacher.getPassword());
-            pstmt.setString(2, teacher.getName());
-            pstmt.setString(3, teacher.getId());
+            pstmt.setString(1, parent.getPhone());
+            pstmt.setLong(2, parent.getId());
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
             log.error("db error", e);
         } finally {
-            close(con, pstmt, null);
+            close(con, pstmt ,null);
         }
     }
 
-    public void delete(String id) {
-        String sql = "DELETE FROM teacher WHERE id = ?";
+    public void delete(Long id) {
+        String sql = "DELETE FROM parent WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -100,7 +96,7 @@ public class TeacherRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, id);
+            pstmt.setLong(1, id);
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
