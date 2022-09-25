@@ -17,7 +17,7 @@ public class TeacherRepository {
     private final DataSource dataSource;
 
     public Teacher save(Teacher teacher) throws SQLException {
-        String sql = "INSERT INTO teacher(id, password, name) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO teacher(teacher_id, teacher_password, teacher_name) VALUES (?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -40,7 +40,7 @@ public class TeacherRepository {
     }
 
     public Teacher findById(String id) {
-        String sql = "SELECT * FROM teacher WHERE id = ?";
+        String sql = "SELECT * FROM teacher WHERE teacher_id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -55,9 +55,9 @@ public class TeacherRepository {
 
             if (rs.next()) {
                 Teacher teacher = new Teacher();
-                teacher.setId(rs.getString("id"));
-                teacher.setPassword(rs.getString("password"));
-                teacher.setName(rs.getString("name"));
+                teacher.setId(rs.getString("teacher_id"));
+                teacher.setPassword(rs.getString("teacher_password"));
+                teacher.setName(rs.getString("teacher_name"));
                 return teacher;
             }
 
@@ -71,7 +71,7 @@ public class TeacherRepository {
     }
 
     public void update(Teacher teacher) {
-        String sql = "UPDATE teacher SET password = ?, name = ? WHERE id = ?";
+        String sql = "UPDATE teacher SET teacher_password = ?, teacher_name = ? WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -92,7 +92,7 @@ public class TeacherRepository {
     }
 
     public void delete(String id) {
-        String sql = "DELETE FROM teacher WHERE id = ?";
+        String sql = "DELETE FROM teacher WHERE teacher_id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;

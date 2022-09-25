@@ -11,5 +11,11 @@ public class Parent {
     private Long id;
 
     @NotEmpty
+    private String name;
+
+    @NotEmpty
     private String phone;
+
+    @NotEmpty
+    private Long studentId;
 }

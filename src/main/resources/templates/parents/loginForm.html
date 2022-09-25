@@ -25,17 +25,17 @@
                th:text="${err}">전체 오류 메시지</p>
         </div>
         <div>
-            <label for="loginId">본인 휴대폰 번호</label>
-            <input type="text" id="loginId" th:field="*{parentPhone}" class="form-control"
+            <label for="phone">본인 휴대폰 번호</label>
+            <input type="text" id="phone" th:field="*{phone}" class="form-control"
                    th:errorclass="field-error">
-            <div class="field-error" th:errors="*{parentPhone}" />
+            <div class="field-error" th:errors="*{phone}" />
         </div>
         <div>
-            <label for="password">학생 휴대폰 번호</label>
-            <input type="password" id="password" th:field="*{studentPhone}"
+            <label for="name">본인 이름</label>
+            <input type="text" id="name" th:field="*{name}"
                    class="form-control"
                    th:errorclass="field-error">
-            <div class="field-error" th:errors="*{studentPhone}" />
+            <div class="field-error" th:errors="*{name}" />
         </div>
         <hr class="my-4">
         <div class="row">

@@ -19,7 +19,7 @@ public class StudentRepository {
     private final DataSource dataSource;
 
     public Student save(Student student) throws SQLException {
-        String sql = "INSERT INTO student(id, parent_id, phone, name) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO student(student_name, student_phone, tuition, regdate) VALUES (?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -27,10 +27,10 @@ public class StudentRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setLong(1, student.getId());
-            pstmt.setLong(2, student.getParentId());
-            pstmt.setString(3, student.getPhone());
-            pstmt.setString(4, student.getName());
+            pstmt.setString(1, student.getName());
+            pstmt.setString(2, student.getPhone());
+            pstmt.setLong(3, student.getTuition());
+            pstmt.setDate(4, Date.valueOf(student.getRegdate()));
             pstmt.executeUpdate();
             return student;
         } catch (SQLException e) {
@@ -42,7 +42,7 @@ public class StudentRepository {
     }
 
     public Student findById(Long id) {
-        String sql = "SELECT * FROM student WHERE id = ?";
+        String sql = "SELECT * FROM student WHERE student_id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -55,75 +55,13 @@ public class StudentRepository {
 
             if (rs.next()) {
                 Student student = new Student();
-                student.setId(rs.getLong("id"));
-                student.setParentId(rs.getLong("parent_id"));
-                student.setPhone(rs.getString("phone"));
-                student.setName(rs.getString("name"));
+                student.setId(rs.getLong("student_id"));
+                student.setName(rs.getString("student_name"));
+                student.setPhone(rs.getString("student_phone"));
+                student.setTuition(rs.getLong("tuition"));
+                student.setRegdate(rs.getDate("regdate").toLocalDate());
                 return student;
             }
-        } catch (SQLException e) {
-            log.error("db error", e);
-        } finally {
-            close(con, pstmt, rs);
-        }
-
-        return null;
-    }
-
-    public Student findByPhone(String phone) {
-        String sql = "SELECT * FROM student WHERE phone = ?";
-
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-            con = getConnection();
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, phone);
-            rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                Student student = new Student();
-                student.setId(rs.getLong("id"));
-                student.setPhone(rs.getString("phone"));
-                student.setParentId(rs.getLong("parent_id"));
-                student.setName(rs.getString("name"));
-                return student;
-            }
-        } catch (SQLException e) {
-            log.error("db error", e);
-        } finally {
-            close(con, pstmt, rs);
-        }
-
-        return null;
-    }
-
-    public List<Student> findByParendId(Long parentId) {
-        String sql = "SELECT * FROM student WHERE parent_id = ?";
-
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-            con = getConnection();
-            pstmt = con.prepareStatement(sql);
-            pstmt.setLong(1, parentId);
-            rs = pstmt.executeQuery();
-            List<Student> students = new LinkedList<>();
-
-            while (rs.next()) {
-                Student student = new Student();
-                student.setId(rs.getLong("id"));
-                student.setParentId(rs.getLong("parent_id"));
-                student.setPhone(rs.getString("phone"));
-                student.setName(rs.getString("name"));
-                students.add(student);
-            }
-
-            return students;
         } catch (SQLException e) {
             log.error("db error", e);
         } finally {
@@ -134,7 +72,7 @@ public class StudentRepository {
     }
 
     public void update(Student student) {
-        String sql = "UPDATE student SET parent_id = ?, phone = ?, name = ?,  WHERE id = ?";
+        String sql = "UPDATE student SET student_name = ?, student_phone = ?, tuition = ?, regdate = ?  WHERE student_id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -142,10 +80,11 @@ public class StudentRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setLong(1, student.getParentId());
+            pstmt.setString(1, student.getName());
             pstmt.setString(2, student.getPhone());
-            pstmt.setString(3, student.getName());
-            pstmt.setLong(4, student.getId());
+            pstmt.setLong(3, student.getTuition());
+            pstmt.setDate(4, Date.valueOf(student.getRegdate()));
+            pstmt.setLong(5, student.getId());
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
@@ -156,7 +95,7 @@ public class StudentRepository {
     }
 
     public void delete(Long id) {
-        String sql = "DELETE FROM student WHERE id = ?";
+        String sql = "DELETE FROM student WHERE student_id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;

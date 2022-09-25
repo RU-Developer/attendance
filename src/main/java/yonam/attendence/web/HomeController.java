@@ -29,8 +29,6 @@ public class HomeController {
 
         if (loginParent != null) {
             model.addAttribute("parent", loginParent);
-            List<Student> students = studentService.findByParentId(loginParent.getId());
-            model.addAttribute("student", students.get(0));
             return "parentLoginHome";
         }
 

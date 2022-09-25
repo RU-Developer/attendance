@@ -16,22 +16,13 @@ public class ParentService {
     private final StudentRepository studentRepository;
 
     public Parent login(ParentLoginForm form) {
-        Student student = studentRepository.findByPhone(form.getStudentPhone());
 
-        if (student == null) {
-            return null; //학생 폰번호 매칭 없음
-        }
-
-        Parent parent = parentRepository.findById(student.getParentId());
+        Parent parent = parentRepository.findByNamePhone(form.getName(), form.getPhone());
 
         if (parent == null) {
-            return null; //부모 폰번호 매칭 없음
+            return null; //부모님 폰과 번호에 매칭 없음
         }
 
-        if (parent.getPhone().equals(form.getParentPhone())) {
-            return parent; //찾음
-        }
-
-        return null; //부모 폰번호 일치 안함
+        return parent;
     }
 }

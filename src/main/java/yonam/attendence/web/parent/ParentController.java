@@ -2,6 +2,7 @@ package yonam.attendence.web.parent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -46,5 +47,26 @@ public class ParentController {
         session.setAttribute(SessionConst.LOGIN_PARENT, loginParent);
 
         return "redirect:" + redirectURL;
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ParentLoginResult loginAndroid(@Validated @ModelAttribute("loginForm") ParentLoginForm form, BindingResult bindingResult,
+                               HttpServletRequest request) {
+
+        if (bindingResult.hasErrors()) {
+            return new ParentLoginResult(false);
+        }
+
+        Parent loginParent = parentService.login(form);
+
+        if (loginParent == null) {
+            return new ParentLoginResult(false);
+        }
+
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_PARENT, loginParent);
+
+        return new ParentLoginResult(true);
     }
 }
