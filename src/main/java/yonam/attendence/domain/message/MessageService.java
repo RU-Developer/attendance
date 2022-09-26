@@ -55,7 +55,7 @@ public class MessageService {
                     log.info("validationCode removed = {}", validationCode);
                     validationMap.remove(validationCode);
                 }
-            }, 30_000); //30초 후 인증 시간 종료
+            }, 60_000); //60초 후 인증 시간 종료
             return result;
         }
 
