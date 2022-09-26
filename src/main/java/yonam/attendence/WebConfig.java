@@ -68,6 +68,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new LoginParentCheckInterceptor())
                 .order(4)
                 .addPathPatterns("/parents/**")
-                .excludePathPatterns("/parents/login");
+                .excludePathPatterns("/parents/login", "/parents/sendvalidation", "/parents/validation");
     }
 }

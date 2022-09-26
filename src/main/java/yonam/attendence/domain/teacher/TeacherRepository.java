@@ -39,6 +39,37 @@ public class TeacherRepository {
         }
     }
 
+    public Teacher findByLesson(Long lesson) {
+        String sql = "SELECT * FROM teacher WHERE lesson = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setLong(1, lesson);
+
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                Teacher teacher = new Teacher();
+                teacher.setLesson(rs.getLong("lesson"));
+                teacher.setId(rs.getString("id"));
+                teacher.setPassword(rs.getString("password"));
+                teacher.setName(rs.getString("name"));
+                return teacher;
+            }
+        } catch (SQLException e) {
+            log.error("db error", e);
+        } finally {
+            close(con, pstmt, rs);
+        }
+
+        return null;
+    }
+
     public Teacher findById(String id) {
         String sql = "SELECT * FROM teacher WHERE id = ?";
 
@@ -55,6 +86,7 @@ public class TeacherRepository {
 
             if (rs.next()) {
                 Teacher teacher = new Teacher();
+                teacher.setLesson(rs.getLong("lesson"));
                 teacher.setId(rs.getString("id"));
                 teacher.setPassword(rs.getString("password"));
                 teacher.setName(rs.getString("name"));
@@ -71,7 +103,7 @@ public class TeacherRepository {
     }
 
     public void update(Teacher teacher) {
-        String sql = "UPDATE teacher SET password = ?, name = ? WHERE id = ?";
+        String sql = "UPDATE teacher SET id = ?, password = ?, name = ? WHERE lesson = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -79,9 +111,10 @@ public class TeacherRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, teacher.getPassword());
-            pstmt.setString(2, teacher.getName());
-            pstmt.setString(3, teacher.getId());
+            pstmt.setString(1, teacher.getId());
+            pstmt.setString(2, teacher.getPassword());
+            pstmt.setString(3, teacher.getName());
+            pstmt.setLong(4, teacher.getLesson());
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
@@ -91,8 +124,8 @@ public class TeacherRepository {
         }
     }
 
-    public void delete(String id) {
-        String sql = "DELETE FROM teacher WHERE id = ?";
+    public void delete(Long lesson) {
+        String sql = "DELETE FROM teacher WHERE lesson = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -100,7 +133,7 @@ public class TeacherRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, id);
+            pstmt.setLong(1, lesson);
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {

@@ -17,7 +17,7 @@ public class StudentRepository {
     private final DataSource dataSource;
 
     public Student save(Student student) throws SQLException {
-        String sql = "INSERT INTO student(name, phone, tuition, reg_date, parent_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO student(name, phone, tuition, reg_date, parent_id, teacher_lesson) VALUES (?, ?, ?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -30,6 +30,7 @@ public class StudentRepository {
             pstmt.setLong(3, student.getTuition());
             pstmt.setDate(4, Date.valueOf(student.getRegdate()));
             pstmt.setLong(5, student.getParentId());
+            pstmt.setLong(6, student.getTeacherLesson());
             pstmt.executeUpdate();
             return student;
         } catch (SQLException e) {
@@ -60,6 +61,7 @@ public class StudentRepository {
                 student.setTuition(rs.getLong("tuition"));
                 student.setRegdate(rs.getDate("regdate").toLocalDate());
                 student.setParentId(rs.getLong("parent_id"));
+                student.setTeacherLesson(rs.getLong("teacher_lesson"));
                 return student;
             }
         } catch (SQLException e) {
@@ -72,7 +74,7 @@ public class StudentRepository {
     }
 
     public void update(Student student) {
-        String sql = "UPDATE student SET name = ?, phone = ?, tuition = ?, regdate = ?, parent_id = ?  WHERE id = ?";
+        String sql = "UPDATE student SET name = ?, phone = ?, tuition = ?, regdate = ?, parent_id = ?, teacher_lesson = ?  WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -85,7 +87,8 @@ public class StudentRepository {
             pstmt.setLong(3, student.getTuition());
             pstmt.setDate(4, Date.valueOf(student.getRegdate()));
             pstmt.setLong(5, student.getParentId());
-            pstmt.setLong(6, student.getId());
+            pstmt.setLong(6, student.getTeacherLesson());
+            pstmt.setLong(7, student.getId());
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {

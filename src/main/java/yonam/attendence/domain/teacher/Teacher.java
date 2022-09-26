@@ -8,6 +8,9 @@ import javax.validation.constraints.NotEmpty;
 public class Teacher {
 
     @NotEmpty
+    private Long lesson;
+
+    @NotEmpty
     private String id;
 
     @NotEmpty

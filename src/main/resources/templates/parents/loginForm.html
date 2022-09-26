@@ -12,6 +12,11 @@
             border-color: #dc3545;
             color: #dc3545;
         }
+
+        .field-message {
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
     </style>
 </head>
 <body>
@@ -19,23 +24,28 @@
     <div class="py-5 text-center">
         <h2>로그인</h2>
     </div>
+    <div>
+        <form th:action="@{/parents/validation}" method="post">
+            <label for="validation">인증번호</label>
+            <input type="text" id="validation" name="validationCode" class="form-control" />
+            <button class="w-25 btn btn-primary btn-sm" type="submit">인증번호확인</button>
+        </form>
+        <form th:action="@{/parents/sendvalidation}" method="post">
+            <input type="hidden" id="validation_phone" name="phone" />
+            <button class="w-25 btn btn-primary btn-sm" id="sendvalidation">인증번호요청</button>
+            <input type="submit" hidden id="send_validation_submit"/>
+        </form>
+    </div>
     <form th:action th:object="${loginForm}" method="post">
         <div th:if="${#fields.hasGlobalErrors()}">
-            <p class="field-error" th:each="err : ${#fields.globalErrors()}"
-               th:text="${err}">전체 오류 메시지</p>
+            <p class="field-message" th:each="err : ${#fields.globalErrors()}"
+               th:text="${err}">전체 메시지</p>
         </div>
         <div>
             <label for="phone">본인 휴대폰 번호</label>
             <input type="text" id="phone" th:field="*{phone}" class="form-control"
                    th:errorclass="field-error">
             <div class="field-error" th:errors="*{phone}" />
-        </div>
-        <div>
-            <label for="name">본인 이름</label>
-            <input type="text" id="name" th:field="*{name}"
-                   class="form-control"
-                   th:errorclass="field-error">
-            <div class="field-error" th:errors="*{name}" />
         </div>
         <hr class="my-4">
         <div class="row">
@@ -51,5 +61,15 @@
         </div>
     </form>
 </div>
+<script>
+    document.querySelector("#sendvalidation").addEventListener("click",
+        function () {
+            const phone = document.querySelector("#phone");
+            const validationPhone = document.querySelector("#validation_phone");
+            const submit = document.querySelector("#send_validation_submit");
+            validationPhone.value = phone.value;
+            submit.click();
+        });
+</script>
 </body>
 </html>

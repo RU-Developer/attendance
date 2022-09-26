@@ -8,7 +8,4 @@ import javax.validation.constraints.NotEmpty;
 public class ParentLoginForm {
     @NotEmpty
     private String phone;
-
-    @NotEmpty
-    private String name;
 }

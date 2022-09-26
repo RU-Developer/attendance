@@ -14,7 +14,7 @@ public class ParentService {
 
     public Parent login(ParentLoginForm form) {
 
-        Parent parent = parentRepository.findByNamePhone(form.getName(), form.getPhone());
+        Parent parent = parentRepository.findByPhone(form.getPhone());
 
         if (parent == null) {
             return null; //부모님 폰과 번호에 매칭 없음

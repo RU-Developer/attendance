@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
-import yonam.attendence.domain.student.Student;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -70,8 +68,8 @@ public class ParentRepository {
         return null;
     }
 
-    public Parent findByNamePhone(String name, String phone) {
-        String sql = "SELECT * FROM parent WHERE name = ? AND phone = ?";
+    public Parent findByPhone(String phone) {
+        String sql = "SELECT * FROM parent WHERE phone = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -80,8 +78,7 @@ public class ParentRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, name);
-            pstmt.setString(2, phone);
+            pstmt.setString(1, phone);
             rs = pstmt.executeQuery();
 
             if (rs.next()) {

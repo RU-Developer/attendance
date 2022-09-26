@@ -23,4 +23,6 @@ public class Student {
 
     @NotEmpty
     private Long parentId;
+
+    @NotEmpty Long teacherLesson;
 }
