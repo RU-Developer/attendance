@@ -20,4 +20,7 @@ public class Student {
 
     @NotEmpty
     private LocalDate regdate;
+
+    @NotEmpty
+    private Long parentId;
 }

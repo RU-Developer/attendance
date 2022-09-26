@@ -3,8 +3,6 @@ package yonam.attendence.domain.parent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import yonam.attendence.domain.student.Student;
-import yonam.attendence.domain.student.StudentRepository;
 import yonam.attendence.web.parent.ParentLoginForm;
 
 @Slf4j
@@ -13,7 +11,6 @@ import yonam.attendence.web.parent.ParentLoginForm;
 public class ParentService {
 
     private final ParentRepository parentRepository;
-    private final StudentRepository studentRepository;
 
     public Parent login(ParentLoginForm form) {
 

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.LinkedList;
-import java.util.List;
 
 @Slf4j
 @Repository
@@ -19,7 +17,7 @@ public class StudentRepository {
     private final DataSource dataSource;
 
     public Student save(Student student) throws SQLException {
-        String sql = "INSERT INTO student(student_name, student_phone, tuition, regdate) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO student(name, phone, tuition, reg_date, parent_id) VALUES (?, ?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -31,6 +29,7 @@ public class StudentRepository {
             pstmt.setString(2, student.getPhone());
             pstmt.setLong(3, student.getTuition());
             pstmt.setDate(4, Date.valueOf(student.getRegdate()));
+            pstmt.setLong(5, student.getParentId());
             pstmt.executeUpdate();
             return student;
         } catch (SQLException e) {
@@ -42,7 +41,7 @@ public class StudentRepository {
     }
 
     public Student findById(Long id) {
-        String sql = "SELECT * FROM student WHERE student_id = ?";
+        String sql = "SELECT * FROM student WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -55,11 +54,12 @@ public class StudentRepository {
 
             if (rs.next()) {
                 Student student = new Student();
-                student.setId(rs.getLong("student_id"));
-                student.setName(rs.getString("student_name"));
-                student.setPhone(rs.getString("student_phone"));
+                student.setId(rs.getLong("id"));
+                student.setName(rs.getString("name"));
+                student.setPhone(rs.getString("phone"));
                 student.setTuition(rs.getLong("tuition"));
                 student.setRegdate(rs.getDate("regdate").toLocalDate());
+                student.setParentId(rs.getLong("parent_id"));
                 return student;
             }
         } catch (SQLException e) {
@@ -72,7 +72,7 @@ public class StudentRepository {
     }
 
     public void update(Student student) {
-        String sql = "UPDATE student SET student_name = ?, student_phone = ?, tuition = ?, regdate = ?  WHERE student_id = ?";
+        String sql = "UPDATE student SET name = ?, phone = ?, tuition = ?, regdate = ?, parent_id = ?  WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -84,7 +84,8 @@ public class StudentRepository {
             pstmt.setString(2, student.getPhone());
             pstmt.setLong(3, student.getTuition());
             pstmt.setDate(4, Date.valueOf(student.getRegdate()));
-            pstmt.setLong(5, student.getId());
+            pstmt.setLong(5, student.getParentId());
+            pstmt.setLong(6, student.getId());
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
@@ -95,7 +96,7 @@ public class StudentRepository {
     }
 
     public void delete(Long id) {
-        String sql = "DELETE FROM student WHERE student_id = ?";
+        String sql = "DELETE FROM student WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;

@@ -19,7 +19,7 @@ public class ParentRepository {
     private final DataSource dataSource;
 
     public Parent save(Parent parent) throws SQLException {
-        String sql = "INSERT INTO parent(parent_name, parent_phone, student_student_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO parent(name, phone) VALUES (?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -29,7 +29,6 @@ public class ParentRepository {
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, parent.getName());
             pstmt.setString(2, parent.getPhone());
-            pstmt.setLong(3, parent.getStudentId());
             pstmt.executeUpdate();
 
             return parent;
@@ -42,7 +41,7 @@ public class ParentRepository {
     }
 
     public Parent findById(Long id) {
-        String sql = "SELECT * FROM parent WHERE parent_id = ?";
+        String sql = "SELECT * FROM parent WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -57,10 +56,9 @@ public class ParentRepository {
 
             if (rs.next()) {
                 Parent parent = new Parent();
-                parent.setId(rs.getLong("parent_id"));
-                parent.setName(rs.getString("parent_name"));
-                parent.setPhone(rs.getString("parent_phone"));
-                parent.setStudentId(rs.getLong("student_student_id"));
+                parent.setId(rs.getLong("id"));
+                parent.setName(rs.getString("name"));
+                parent.setPhone(rs.getString("phone"));
                 return parent;
             }
         } catch (SQLException e) {
@@ -73,7 +71,7 @@ public class ParentRepository {
     }
 
     public Parent findByNamePhone(String name, String phone) {
-        String sql = "SELECT * FROM parent WHERE parent_name = ? AND parent_phone = ?";
+        String sql = "SELECT * FROM parent WHERE name = ? AND phone = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -88,10 +86,9 @@ public class ParentRepository {
 
             if (rs.next()) {
                 Parent parent = new Parent();
-                parent.setId(rs.getLong("parent_id"));
-                parent.setName(rs.getString("parent_name"));
-                parent.setPhone(rs.getString("parent_phone"));
-                parent.setStudentId(rs.getLong("student_student_id"));
+                parent.setId(rs.getLong("id"));
+                parent.setName(rs.getString("name"));
+                parent.setPhone(rs.getString("phone"));
                 return parent;
             }
         } catch (SQLException e) {
@@ -104,7 +101,7 @@ public class ParentRepository {
     }
 
     public void update(Parent parent) {
-        String sql = "UPDATE parent SET parent_name = ?, parent_phone = ?, student_student_id = ? WHERE parent_id = ?";
+        String sql = "UPDATE parent SET name = ?, phone = ? WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -114,8 +111,7 @@ public class ParentRepository {
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, parent.getName());
             pstmt.setString(2, parent.getPhone());
-            pstmt.setLong(3, parent.getStudentId());
-            pstmt.setLong(4, parent.getId());
+            pstmt.setLong(3, parent.getId());
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize={}", resultSize);
         } catch (SQLException e) {
@@ -126,7 +122,7 @@ public class ParentRepository {
     }
 
     public void delete(Long id) {
-        String sql = "DELETE FROM parent WHERE parent_id = ?";
+        String sql = "DELETE FROM parent WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;

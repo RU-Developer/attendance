@@ -15,7 +15,4 @@ public class Parent {
 
     @NotEmpty
     private String phone;
-
-    @NotEmpty
-    private Long studentId;
 }

@@ -11,8 +11,8 @@ public class Teacher {
     private String id;
 
     @NotEmpty
-    private String name;
+    private String password;
 
     @NotEmpty
-    private String password;
+    private String name;
 }

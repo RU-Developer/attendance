@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import yonam.attendence.domain.parent.Parent;
 import yonam.attendence.domain.parent.ParentService;
+import yonam.attendence.domain.util.Util;
 import yonam.attendence.web.SessionConst;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +37,8 @@ public class ParentController {
         if (bindingResult.hasErrors()) {
             return "parents/loginForm";
         }
+
+        form.setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(form.getPhone()));
 
         Parent loginParent = parentService.login(form);
 
