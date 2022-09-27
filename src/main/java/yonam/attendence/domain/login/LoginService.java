@@ -3,10 +3,12 @@ package yonam.attendence.domain.login;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.domain.teacher.TeacherRepository;
 import yonam.attendence.web.login.LoginForm;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class LoginService {

@@ -19,7 +19,7 @@ public class Student {
     private Long tuition;
 
     @NotEmpty
-    private LocalDate regdate;
+    private LocalDate regDate;
 
     @NotEmpty
     private Long parentId;

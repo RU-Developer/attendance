@@ -65,7 +65,7 @@ public class ParentController {
 
     @ResponseBody
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ParentLoginResult loginAndroid(@Validated @ModelAttribute("loginForm") ParentLoginForm form, BindingResult bindingResult,
+    public ParentLoginResult loginAndroid(@Validated ParentLoginForm form, BindingResult bindingResult,
                                           HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
@@ -156,7 +156,7 @@ public class ParentController {
 
     @ResponseBody
     @PostMapping(path = "/sendvalidation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public MessageResult sendValidationAndroid(@Validated @ModelAttribute("loginForm") ParentLoginForm form, BindingResult bindingResult) {
+    public MessageResult sendValidationAndroid(@Validated ParentLoginForm form, BindingResult bindingResult) {
         log.info("/sendvalidation android");
         if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
