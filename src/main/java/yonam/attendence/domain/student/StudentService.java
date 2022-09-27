@@ -11,5 +11,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
-
+    public Student findById(Long id) {
+        return studentRepository.findById(id);
+    }
 }

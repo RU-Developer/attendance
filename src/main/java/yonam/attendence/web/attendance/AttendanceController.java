@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import yonam.attendence.domain.attendance.AttendanceService;
+import yonam.attendence.domain.student.Student;
+import yonam.attendence.domain.student.StudentService;
 import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.web.SessionConst;
 
@@ -21,6 +23,7 @@ import java.util.List;
 public class AttendanceController {
 
     private final AttendanceService attendanceService;
+    private final StudentService studentService;
 
     @ResponseBody
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,5 +38,12 @@ public class AttendanceController {
     public String attendanceToday(@RequestParam("studentIdList") List<Long> studentIdList) {
         attendanceService.attendanceToday(studentIdList);
         return "200 ok";
+    }
+
+    @ResponseBody
+    @GetMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AttendanceStudentResult studentForm(@RequestParam("studentId") Long studentId) {
+        Student student = studentService.findById(studentId);
+        return new AttendanceStudentResult(student, attendanceService.studentAttendances(studentId));
     }
 }

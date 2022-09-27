@@ -32,6 +32,10 @@ public class AttendanceService {
         return studentRepository.studentParentByTeacherLesson(lesson);
     }
 
+    public List<Attendance> studentAttendances(Long studentId) {
+        return attendanceRepository.findByStudentId(studentId);
+    }
+
     public void attendanceToday(List<Long> studentIdList) {
         LocalDate dateAttendance = LocalDate.now();
         LocalDateTime inTime = LocalDateTime.now();
