@@ -1,6 +1,7 @@
 package yonam.attendence.domain.student;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ public class Student {
     private Long tuition;
 
     @NotEmpty
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate regDate;
 
     @NotEmpty

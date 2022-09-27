@@ -12,7 +12,6 @@ import yonam.attendence.domain.student.Student;
 import yonam.attendence.domain.student.StudentRepository;
 import yonam.attendence.web.attendance.StudentParentAttendance;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +29,10 @@ public class AttendanceService {
 
     public List<StudentParentAttendance> studentParentAttendancesWithTeacher(Long lesson) {
         return studentRepository.studentParentByTeacherLesson(lesson);
+    }
+
+    public void updateAttendance(Attendance attendance) {
+        attendanceRepository.update(attendance);
     }
 
     public List<Attendance> studentAttendances(Long studentId) {
@@ -56,7 +59,7 @@ public class AttendanceService {
             String message = getMessage(inTime, student);
 
             log.info("message = {}", message);
-            attendance.setStudent_id(studentId);
+            attendance.setStudentId(studentId);
             attendanceRepository.save(attendance);
             messageService.send(new MessageForm(message, parent.getPhone()));
         }

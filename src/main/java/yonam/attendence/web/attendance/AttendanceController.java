@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import yonam.attendence.domain.attendance.Attendance;
 import yonam.attendence.domain.attendance.AttendanceService;
 import yonam.attendence.domain.student.Student;
 import yonam.attendence.domain.student.StudentService;
@@ -42,8 +43,15 @@ public class AttendanceController {
 
     @ResponseBody
     @GetMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AttendanceStudentResult studentForm(@RequestParam("studentId") Long studentId) {
+    public AttendanceStudentResult studentForm(@ModelAttribute("studentId") Long studentId) {
+        log.info("studentId={}", studentId);
         Student student = studentService.findById(studentId);
         return new AttendanceStudentResult(student, attendanceService.studentAttendances(studentId));
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void studentUpdate(@ModelAttribute Attendance attendance) {
+        attendanceService.updateAttendance(attendance);
     }
 }

@@ -34,7 +34,7 @@ public class AttendanceRepository {
                     Timestamp.valueOf(attendance.getInTime()));
             pstmt.setTimestamp(3, attendance.getOutTime() == null ? null :
                     Timestamp.valueOf(attendance.getOutTime()));
-            pstmt.setLong(4, attendance.getStudent_id());
+            pstmt.setLong(4, attendance.getStudentId());
             pstmt.executeUpdate();
 
             return attendance;
@@ -69,7 +69,7 @@ public class AttendanceRepository {
                         rs.getTimestamp("in_time").toLocalDateTime());
                 attendance.setOutTime(rs.getTimestamp("out_time") == null ? null :
                         rs.getTimestamp("out_time").toLocalDateTime());
-                attendance.setStudent_id(rs.getLong("student_id"));
+                attendance.setStudentId(rs.getLong("student_id"));
                 return attendance;
             }
         } catch (SQLException e) {
@@ -105,7 +105,7 @@ public class AttendanceRepository {
                         rs.getTimestamp("in_time").toLocalDateTime());
                 attendance.setOutTime(rs.getTimestamp("out_time") == null ? null :
                         rs.getTimestamp("out_time").toLocalDateTime());
-                attendance.setStudent_id(rs.getLong("student_id"));
+                attendance.setStudentId(rs.getLong("student_id"));
                 attendances.add(attendance);
             }
 
@@ -134,7 +134,7 @@ public class AttendanceRepository {
                     Timestamp.valueOf(attendance.getInTime()));
             pstmt.setTimestamp(3, attendance.getOutTime() == null ? null :
                     Timestamp.valueOf(attendance.getOutTime()));
-            pstmt.setLong(4, attendance.getStudent_id());
+            pstmt.setLong(4, attendance.getStudentId());
             pstmt.setLong(5, attendance.getId());
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize = {}", resultSize);
