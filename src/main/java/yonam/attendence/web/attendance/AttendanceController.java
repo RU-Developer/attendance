@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import yonam.attendence.domain.attendance.AttendanceService;
 import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.web.SessionConst;
@@ -29,5 +28,12 @@ public class AttendanceController {
         HttpSession session = request.getSession();
         Teacher loginTeacher = (Teacher) session.getAttribute(SessionConst.LOGIN_TEACHER);
         return attendanceService.studentParentAttendancesWithTeacher(loginTeacher.getLesson());
+    }
+
+    @ResponseBody
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public String attendanceToday(@RequestParam("studentIdList") List<Long> studentIdList) {
+        attendanceService.attendanceToday(studentIdList);
+        return "200 ok";
     }
 }

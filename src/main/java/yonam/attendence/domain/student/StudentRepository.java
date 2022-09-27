@@ -32,7 +32,8 @@ public class StudentRepository {
             pstmt.setString(1, student.getName());
             pstmt.setString(2, student.getPhone());
             pstmt.setLong(3, student.getTuition());
-            pstmt.setDate(4, Date.valueOf(student.getRegDate()));
+            pstmt.setDate(4, student.getRegDate() == null ? null :
+                    Date.valueOf(student.getRegDate()));
             pstmt.setLong(5, student.getParentId());
             pstmt.setLong(6, student.getTeacherLesson());
             pstmt.executeUpdate();
@@ -55,6 +56,7 @@ public class StudentRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
+            pstmt.setLong(1, id);
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -63,13 +65,14 @@ public class StudentRepository {
                 student.setName(rs.getString("name"));
                 student.setPhone(rs.getString("phone"));
                 student.setTuition(rs.getLong("tuition"));
-                student.setRegDate(rs.getDate("regdate").toLocalDate());
+                student.setRegDate(rs.getDate("reg_date") == null ? null :
+                        rs.getDate("reg_date").toLocalDate());
                 student.setParentId(rs.getLong("parent_id"));
                 student.setTeacherLesson(rs.getLong("teacher_lesson"));
                 return student;
             }
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("student db error", e);
         } finally {
             close(con, pstmt, rs);
         }
@@ -99,7 +102,8 @@ public class StudentRepository {
                 student.setName(rs.getString("name"));
                 student.setParentId(rs.getLong("parent_id"));
                 student.setTuition(rs.getLong("tuition"));
-                student.setRegDate(rs.getDate("reg_date").toLocalDate());
+                student.setRegDate(rs.getDate("reg_date") == null ? null :
+                        rs.getDate("reg_date").toLocalDate());
                 student.setTeacherLesson(rs.getLong("teacher_lesson"));
                 students.add(student);
             }
@@ -140,7 +144,8 @@ public class StudentRepository {
                 student.setPhone(rs.getString("s.phone"));
                 student.setParentId(rs.getLong("p.id"));
                 student.setTuition(rs.getLong("s.tuition"));
-                student.setRegDate(rs.getDate("s.reg_date").toLocalDate());
+                student.setRegDate(rs.getDate("reg_date") == null ? null :
+                        rs.getDate("reg_date").toLocalDate());
                 student.setTeacherLesson(rs.getLong("s.teacher_lesson"));
 
                 parent.setId(rs.getLong("p.id"));
@@ -173,7 +178,8 @@ public class StudentRepository {
             pstmt.setString(1, student.getName());
             pstmt.setString(2, student.getPhone());
             pstmt.setLong(3, student.getTuition());
-            pstmt.setDate(4, Date.valueOf(student.getRegDate()));
+            pstmt.setDate(4, student.getRegDate() == null ? null :
+                    Date.valueOf(student.getRegDate()));
             pstmt.setLong(5, student.getParentId());
             pstmt.setLong(6, student.getTeacherLesson());
             pstmt.setLong(7, student.getId());

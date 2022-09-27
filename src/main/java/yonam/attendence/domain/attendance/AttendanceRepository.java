@@ -18,7 +18,7 @@ public class AttendanceRepository {
 
     private final DataSource dataSource;
 
-    public Attendance save(Attendance attendance) throws SQLException {
+    public Attendance save(Attendance attendance) {
         String sql = "INSERT INTO attendance(date_attendance, in_time, out_time, student_id) VALUES(?, ?, ?, ?)";
 
         Connection con = null;
@@ -27,19 +27,24 @@ public class AttendanceRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setDate(1, Date.valueOf(attendance.getDateAttendance()));
-            pstmt.setTimestamp(2, Timestamp.valueOf(attendance.getInTime()));
-            pstmt.setTimestamp(3, Timestamp.valueOf(attendance.getOutTime()));
+            pstmt.setDate(1, attendance.getDateAttendance() == null ? null :
+                    Date.valueOf(attendance.getDateAttendance()));
+
+            pstmt.setTimestamp(2, attendance.getInTime() == null ? null :
+                    Timestamp.valueOf(attendance.getInTime()));
+            pstmt.setTimestamp(3, attendance.getOutTime() == null ? null :
+                    Timestamp.valueOf(attendance.getOutTime()));
             pstmt.setLong(4, attendance.getStudent_id());
             pstmt.executeUpdate();
 
             return attendance;
         } catch (SQLException e) {
-            log.error("db error", e);
-            throw e;
+            log.error("attendance db error", e);
         } finally {
             close(con, pstmt, null);
         }
+
+        return null;
     }
 
     public Attendance findById(Long id) {
@@ -58,9 +63,12 @@ public class AttendanceRepository {
             if (rs.next()) {
                 Attendance attendance = new Attendance();
                 attendance.setId(rs.getLong("id"));
-                attendance.setDateAttendance(rs.getDate("date_attendance").toLocalDate());
-                attendance.setInTime(rs.getTimestamp("in_time").toLocalDateTime());
-                attendance.setOutTime(rs.getTimestamp("out_time").toLocalDateTime());
+                attendance.setDateAttendance(rs.getDate("date_attendance") == null ? null :
+                        rs.getDate("date_attendance").toLocalDate());
+                attendance.setInTime(rs.getTimestamp("in_time") == null ? null :
+                        rs.getTimestamp("in_time").toLocalDateTime());
+                attendance.setOutTime(rs.getTimestamp("out_time") == null ? null :
+                        rs.getTimestamp("out_time").toLocalDateTime());
                 attendance.setStudent_id(rs.getLong("student_id"));
                 return attendance;
             }
@@ -91,9 +99,12 @@ public class AttendanceRepository {
             while (rs.next()) {
                 Attendance attendance = new Attendance();
                 attendance.setId(rs.getLong("id"));
-                attendance.setDateAttendance(rs.getDate("date_attendance").toLocalDate());
-                attendance.setInTime(rs.getTimestamp("in_time").toLocalDateTime());
-                attendance.setOutTime(rs.getTimestamp("out_time").toLocalDateTime());
+                attendance.setDateAttendance(rs.getDate("date_attendance") == null ? null :
+                        rs.getDate("date_attendance").toLocalDate());
+                attendance.setInTime(rs.getTimestamp("in_time") == null ? null :
+                        rs.getTimestamp("in_time").toLocalDateTime());
+                attendance.setOutTime(rs.getTimestamp("out_time") == null ? null :
+                        rs.getTimestamp("out_time").toLocalDateTime());
                 attendance.setStudent_id(rs.getLong("student_id"));
                 attendances.add(attendance);
             }
@@ -117,9 +128,12 @@ public class AttendanceRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setDate(1, Date.valueOf(attendance.getDateAttendance()));
-            pstmt.setTimestamp(2, Timestamp.valueOf(attendance.getInTime()));
-            pstmt.setTimestamp(3, Timestamp.valueOf(attendance.getOutTime()));
+            pstmt.setDate(1, attendance.getDateAttendance() == null ? null :
+                    Date.valueOf(attendance.getDateAttendance()));
+            pstmt.setTimestamp(2, attendance.getInTime() == null ? null :
+                    Timestamp.valueOf(attendance.getInTime()));
+            pstmt.setTimestamp(3, attendance.getOutTime() == null ? null :
+                    Timestamp.valueOf(attendance.getOutTime()));
             pstmt.setLong(4, attendance.getStudent_id());
             pstmt.setLong(5, attendance.getId());
             int resultSize = pstmt.executeUpdate();

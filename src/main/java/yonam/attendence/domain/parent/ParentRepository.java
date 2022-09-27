@@ -60,7 +60,7 @@ public class ParentRepository {
                 return parent;
             }
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("parent db error", e);
         } finally {
             close(con, pstmt, rs);
         }
