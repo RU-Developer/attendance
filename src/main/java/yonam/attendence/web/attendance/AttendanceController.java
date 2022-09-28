@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import yonam.attendence.domain.attendance.Attendance;
 import yonam.attendence.domain.attendance.AttendanceService;
 import yonam.attendence.domain.student.Student;
+import yonam.attendence.domain.student.StudentParent;
 import yonam.attendence.domain.student.StudentService;
 import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.web.SessionConst;
@@ -28,10 +28,10 @@ public class AttendanceController {
 
     @ResponseBody
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<StudentParentAttendance> attendance(HttpServletRequest request) {
+    public List<StudentParent> attendance(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Teacher loginTeacher = (Teacher) session.getAttribute(SessionConst.LOGIN_TEACHER);
-        return attendanceService.studentParentAttendancesWithTeacher(loginTeacher.getLesson());
+        return studentService.studentParentWithTeacherLesson(loginTeacher.getLesson());
     }
 
     @ResponseBody

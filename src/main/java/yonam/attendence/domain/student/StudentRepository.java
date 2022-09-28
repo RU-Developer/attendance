@@ -6,7 +6,6 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Repository;
 import yonam.attendence.domain.parent.Parent;
-import yonam.attendence.web.attendance.StudentParentAttendance;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -20,7 +19,7 @@ public class StudentRepository {
 
     private final DataSource dataSource;
 
-    public Student save(Student student) throws SQLException {
+    public Student save(Student student) {
         String sql = "INSERT INTO student(name, phone, tuition, reg_date, parent_id, teacher_lesson) VALUES (?, ?, ?, ?, ?, ?)";
 
         Connection con = null;
@@ -40,10 +39,11 @@ public class StudentRepository {
             return student;
         } catch (SQLException e) {
             log.error("db error", e);
-            throw e;
         } finally {
             close(con, pstmt, null);
         }
+
+        return null;
     }
 
     public Student findById(Long id) {
@@ -118,7 +118,45 @@ public class StudentRepository {
         return null;
     }
 
-    public List<StudentParentAttendance> studentParentByTeacherLesson(Long teacherLesson) {
+    public List<Student> findByParentId(Long parentId) {
+        String sql = "SELECT * FROM student WHERE parent_id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setLong(1, parentId);
+            rs = pstmt.executeQuery();
+
+            List<Student> students = new LinkedList<>();
+
+            while (rs.next()) {
+                Student student = new Student();
+                student.setId(rs.getLong("id"));
+                student.setPhone(rs.getString("phone"));
+                student.setName(rs.getString("name"));
+                student.setParentId(rs.getLong("parent_id"));
+                student.setTuition(rs.getLong("tuition"));
+                student.setRegDate(rs.getDate("reg_date") == null ? null :
+                        rs.getDate("reg_date").toLocalDate());
+                student.setTeacherLesson(rs.getLong("teacher_lesson"));
+                students.add(student);
+            }
+
+            return students;
+        } catch (SQLException e) {
+            log.error("student db error", e);
+        } finally {
+            close(con, pstmt, rs);
+        }
+
+        return null;
+    }
+
+    public List<StudentParent> studentParentByTeacherLesson(Long teacherLesson) {
         String sql = "SELECT s.id, s.phone, s.name, s.tuition, s.reg_date, s.teacher_lesson, p.id, p.phone, p.name " +
                 "FROM student s, parent p " +
                 "WHERE s.teacher_lesson = ? AND s.parent_id = p.id";
@@ -133,7 +171,7 @@ public class StudentRepository {
             pstmt.setLong(1, teacherLesson);
             rs = pstmt.executeQuery();
 
-            List<StudentParentAttendance> studentParentAttendances = new LinkedList<>();
+            List<StudentParent> studentParentAttendances = new LinkedList<>();
 
             while (rs.next()) {
                 Student student = new Student();
@@ -152,7 +190,7 @@ public class StudentRepository {
                 parent.setPhone(rs.getString("p.phone"));
                 parent.setName(rs.getString("p.name"));
 
-                StudentParentAttendance studentParentAttendance = new StudentParentAttendance(student, parent);
+                StudentParent studentParentAttendance = new StudentParent(student, parent);
                 studentParentAttendances.add(studentParentAttendance);
             }
 

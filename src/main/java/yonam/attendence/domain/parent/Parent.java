@@ -7,7 +7,6 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class Parent {
 
-    @NotEmpty
     private Long id;
 
     @NotEmpty

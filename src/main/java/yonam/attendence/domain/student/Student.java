@@ -8,7 +8,6 @@ import java.time.LocalDate;
 
 @Data
 public class Student {
-    @NotEmpty
     private Long id;
 
     @NotEmpty

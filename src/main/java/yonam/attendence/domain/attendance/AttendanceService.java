@@ -10,7 +10,6 @@ import yonam.attendence.domain.parent.Parent;
 import yonam.attendence.domain.parent.ParentRepository;
 import yonam.attendence.domain.student.Student;
 import yonam.attendence.domain.student.StudentRepository;
-import yonam.attendence.web.attendance.StudentParentAttendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,9 +26,7 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final MessageService messageService;
 
-    public List<StudentParentAttendance> studentParentAttendancesWithTeacher(Long lesson) {
-        return studentRepository.studentParentByTeacherLesson(lesson);
-    }
+
 
     public void updateAttendance(Attendance attendance) {
         attendanceRepository.update(attendance);

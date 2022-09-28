@@ -16,7 +16,7 @@ public class ParentRepository {
 
     private final DataSource dataSource;
 
-    public Parent save(Parent parent) throws SQLException {
+    public Parent save(Parent parent) {
         String sql = "INSERT INTO parent(name, phone) VALUES (?, ?)";
 
         Connection con = null;
@@ -32,10 +32,11 @@ public class ParentRepository {
             return parent;
         } catch (SQLException e) {
             log.error("db error", e);
-            throw e;
         } finally {
             close(con, pstmt, null);
         }
+
+        return null;
     }
 
     public Parent findById(Long id) {
