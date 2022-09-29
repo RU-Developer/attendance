@@ -7,7 +7,7 @@ public class Util {
      * @return
      */
     public static String deleteSpecialSymbolsAtPhoneNumber(String phone) {
-        if (phone == null) {
+        if (phone == null || phone.length() == 0) {
             return null;
         }
 

@@ -13,6 +13,9 @@ import yonam.attendence.domain.message.MessageResult;
 import yonam.attendence.domain.message.MessageService;
 import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.domain.teacher.TeacherService;
+import yonam.attendence.web.SessionConst;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Controller
@@ -76,5 +79,11 @@ public class TeacherController {
         }
 
         return messageService.send(messageForm);
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Teacher profile(HttpServletRequest request) {
+        return (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
     }
 }

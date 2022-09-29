@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import yonam.attendence.domain.attendance.AttendanceRepository;
 import yonam.attendence.domain.parent.Parent;
 import yonam.attendence.domain.parent.ParentRepository;
 
@@ -18,6 +19,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final ParentRepository parentRepository;
+    private final AttendanceRepository attendanceRepository;
 
     public Student findById(Long id) {
         return studentRepository.findById(id);
@@ -25,6 +27,27 @@ public class StudentService {
 
     public List<StudentParent> studentParentWithTeacherLesson(Long lesson) {
         return studentRepository.studentParentByTeacherLesson(lesson);
+    }
+
+    public void withdraw(Long studentId) {
+        Student student = studentRepository.findById(studentId);
+        if (student == null) {
+            return;
+        }
+
+        Parent parent = parentRepository.findById(student.getParentId());
+        if (parent == null) {
+            return;
+        }
+
+        attendanceRepository.deleteByStudentId(studentId);
+        studentRepository.delete(studentId);
+
+        List<Student> byParentId = studentRepository.findByParentId(parent.getId());
+
+        if (byParentId == null || byParentId.size() == 0) {
+            parentRepository.delete(parent.getId());
+        }
     }
 
     public StudentParent saveStudentParent(StudentParent studentParent) {

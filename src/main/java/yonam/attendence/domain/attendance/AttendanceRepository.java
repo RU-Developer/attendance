@@ -245,6 +245,24 @@ public class AttendanceRepository {
         }
     }
 
+    public void deleteByStudentId(Long studentId) {
+        String sql = "DELETE FROM attendance WHERE student_id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setLong(1, studentId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            log.error("delete By StudentId attendance db error");
+        } finally {
+            close(con, pstmt, null);
+        }
+    }
+
     private void close(Connection con, Statement stmt, ResultSet rs) {
         JdbcUtils.closeResultSet(rs);
         JdbcUtils.closeStatement(stmt);

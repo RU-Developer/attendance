@@ -24,4 +24,8 @@ public class ParentService {
 
         return parent;
     }
+
+    public Parent findById(Long parentId) {
+        return parentRepository.findById(parentId);
+    }
 }

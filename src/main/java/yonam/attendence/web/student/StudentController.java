@@ -6,6 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import yonam.attendence.domain.parent.Parent;
+import yonam.attendence.domain.parent.ParentService;
+import yonam.attendence.domain.student.Student;
 import yonam.attendence.domain.student.StudentService;
 import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.domain.util.Util;
@@ -23,6 +26,7 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService studentService;
+    private final ParentService parentService;
 
     @ResponseBody
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,5 +44,27 @@ public class StudentController {
         Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
         studentParent.getStudent().setTeacherLesson(loginTeacher.getLesson());
         studentService.saveStudentParent(studentParent);
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+    public StudentParent profile(@RequestParam Long studentId) {
+        Student student = studentService.findById(studentId);
+        if (student == null) {
+            return null;
+        }
+
+        Parent parent = parentService.findById(student.getParentId());
+        if (parent == null) {
+            return null;
+        }
+
+        return new StudentParent(student, parent);
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/withdraw", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void withdraw(@RequestParam Long studentId) {
+        studentService.withdraw(studentId);
     }
 }
