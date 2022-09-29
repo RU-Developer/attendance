@@ -205,7 +205,7 @@ public class StudentRepository {
     }
 
     public void update(Student student) {
-        String sql = "UPDATE student SET name = ?, phone = ?, tuition = ?, regdate = ?, parent_id = ?, teacher_lesson = ?  WHERE id = ?";
+        String sql = "UPDATE student SET name = ?, phone = ?, tuition = ?, reg_date = ?, parent_id = ?, teacher_lesson = ?  WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;

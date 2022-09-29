@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import yonam.attendence.domain.attendance.AttendanceRepository;
 import yonam.attendence.domain.parent.Parent;
 import yonam.attendence.domain.parent.ParentRepository;
+import yonam.attendence.domain.util.Util;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -48,6 +49,28 @@ public class StudentService {
         if (byParentId == null || byParentId.size() == 0) {
             parentRepository.delete(parent.getId());
         }
+    }
+
+    public void updateStudentParent(StudentParent studentParent) {
+        Student student = studentRepository.findById(studentParent.getStudent().getId());
+        if (student == null) {
+            return;
+        }
+
+        Parent parent = parentRepository.findById(student.getParentId());
+        if (parent == null) {
+            return;
+        }
+
+        student.setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(studentParent.getStudent().getPhone()));
+        student.setTuition(studentParent.getStudent().getTuition());
+        student.setName(studentParent.getStudent().getName());
+
+        parent.setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(studentParent.getParent().getPhone()));
+        parent.setName(studentParent.getParent().getName());
+
+        studentRepository.update(student);
+        parentRepository.update(parent);
     }
 
     public StudentParent saveStudentParent(StudentParent studentParent) {

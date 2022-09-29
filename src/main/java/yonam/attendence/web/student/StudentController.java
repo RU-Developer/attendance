@@ -67,4 +67,10 @@ public class StudentController {
     public void withdraw(@RequestParam Long studentId) {
         studentService.withdraw(studentId);
     }
+
+    @ResponseBody
+    @PutMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void update(@RequestBody StudentParent studentParent) {
+        studentService.updateStudentParent(studentParent);
+    }
 }
