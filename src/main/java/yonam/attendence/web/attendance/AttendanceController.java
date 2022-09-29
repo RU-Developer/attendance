@@ -36,9 +36,14 @@ public class AttendanceController {
 
     @ResponseBody
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public String attendanceToday(@RequestParam("studentIdList") List<Long> studentIdList) {
+    public void attendanceToday(@RequestParam("studentIdList") List<Long> studentIdList) {
         attendanceService.attendanceToday(studentIdList);
-        return "200 ok";
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/leave", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void leaveAcademyToday(@RequestParam("studentIdList") List<Long> studentIdList) {
+        attendanceService.leaveAcademyToday(studentIdList);
     }
 
     @ResponseBody
