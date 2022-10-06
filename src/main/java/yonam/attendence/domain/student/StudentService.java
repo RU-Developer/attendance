@@ -52,13 +52,17 @@ public class StudentService {
     }
 
     public void updateStudentParent(StudentParent studentParent) {
+        log.info("studentid = {}", studentParent.getStudent().getId());
         Student student = studentRepository.findById(studentParent.getStudent().getId());
         if (student == null) {
+            log.info("student == null");
             return;
         }
 
+        log.info("parentid = {}", student.getParentId());
         Parent parent = parentRepository.findById(student.getParentId());
         if (parent == null) {
+            log.info("parent == null");
             return;
         }
 
