@@ -1,20 +1,20 @@
 package yonam.attendence.domain.parent;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Repository;
+import yonam.attendence.domain.AbstractRepository;
 
 import javax.sql.DataSource;
 import java.sql.*;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
-public class ParentRepository {
+public class ParentRepository extends AbstractRepository {
 
-    private final DataSource dataSource;
+
+    public ParentRepository(DataSource dataSource) {
+        super(dataSource);
+    }
 
     public Parent save(Parent parent) {
         String sql = "INSERT INTO parent(name, phone) VALUES (?, ?)";
@@ -136,17 +136,5 @@ public class ParentRepository {
         } finally {
             close(con, pstmt, null);
         }
-    }
-
-    private void close(Connection con, Statement stmt, ResultSet rs) {
-        JdbcUtils.closeResultSet(rs);
-        JdbcUtils.closeStatement(stmt);
-        DataSourceUtils.releaseConnection(con, dataSource);
-    }
-
-    private Connection getConnection() throws SQLException {
-        Connection con = DataSourceUtils.getConnection(dataSource);
-        log.info("get Connection={}, class={}", con, con.getClass());
-        return con;
     }
 }

@@ -2,9 +2,8 @@ package yonam.attendence.domain.student;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Repository;
+import yonam.attendence.domain.AbstractRepository;
 import yonam.attendence.domain.parent.Parent;
 
 import javax.sql.DataSource;
@@ -14,13 +13,15 @@ import java.util.List;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
-public class StudentRepository {
+public class StudentRepository extends AbstractRepository {
 
-    private final DataSource dataSource;
+    public StudentRepository(DataSource dataSource) {
+        super(dataSource);
+    }
 
     public Student save(Student student) {
-        String sql = "INSERT INTO student(name, phone, tuition, reg_date, parent_id, teacher_lesson) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO student(name, phone, tuition, reg_date, parent_id, teacher_lesson) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -205,7 +206,9 @@ public class StudentRepository {
     }
 
     public void update(Student student) {
-        String sql = "UPDATE student SET name = ?, phone = ?, tuition = ?, reg_date = ?, parent_id = ?, teacher_lesson = ?  WHERE id = ?";
+        String sql = "UPDATE student " +
+                "SET name = ?, phone = ?, tuition = ?, reg_date = ?, parent_id = ?, teacher_lesson = ? " +
+                " WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -247,17 +250,5 @@ public class StudentRepository {
         } finally {
             close(con, pstmt, null);
         }
-    }
-
-    private void close(Connection con, Statement stmt, ResultSet rs) {
-        JdbcUtils.closeResultSet(rs);
-        JdbcUtils.closeStatement(stmt);
-        DataSourceUtils.releaseConnection(con, dataSource);
-    }
-
-    private Connection getConnection() throws SQLException {
-        Connection con = DataSourceUtils.getConnection(dataSource);
-        log.info("get Connection={}, class={}", con, con.getClass());
-        return con;
     }
 }

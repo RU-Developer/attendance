@@ -1,10 +1,8 @@
 package yonam.attendence.domain.attendance;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Repository;
+import yonam.attendence.domain.AbstractRepository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -14,10 +12,11 @@ import java.util.List;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
-public class AttendanceRepository {
+public class AttendanceRepository extends AbstractRepository {
 
-    private final DataSource dataSource;
+    public AttendanceRepository(DataSource dataSource) {
+        super(dataSource);
+    }
 
     public Attendance save(Attendance attendance) {
         String sql = "INSERT INTO attendance(date_attendance, in_time, out_time, student_id) VALUES(?, ?, ?, ?)";
@@ -261,17 +260,5 @@ public class AttendanceRepository {
         } finally {
             close(con, pstmt, null);
         }
-    }
-
-    private void close(Connection con, Statement stmt, ResultSet rs) {
-        JdbcUtils.closeResultSet(rs);
-        JdbcUtils.closeStatement(stmt);
-        DataSourceUtils.releaseConnection(con, dataSource);
-    }
-
-    private Connection getConnection() throws SQLException {
-        Connection con = DataSourceUtils.getConnection(dataSource);
-        log.info("get Connection={}, class={}", con, con.getClass());
-        return con;
     }
 }

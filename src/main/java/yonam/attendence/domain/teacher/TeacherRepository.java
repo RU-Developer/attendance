@@ -1,20 +1,19 @@
 package yonam.attendence.domain.teacher;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Repository;
+import yonam.attendence.domain.AbstractRepository;
 
 import javax.sql.DataSource;
 import java.sql.*;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
-public class TeacherRepository {
+public class TeacherRepository extends AbstractRepository {
 
-    private final DataSource dataSource;
+    public TeacherRepository(DataSource dataSource) {
+        super(dataSource);
+    }
 
     public Teacher save(Teacher teacher) throws SQLException {
         String sql = "INSERT INTO teacher(id, password, name) VALUES (?, ?, ?)";
@@ -141,17 +140,5 @@ public class TeacherRepository {
         } finally {
             close(con, pstmt, null);
         }
-    }
-
-    private void close(Connection con, Statement stmt, ResultSet rs) {
-        JdbcUtils.closeResultSet(rs);
-        JdbcUtils.closeStatement(stmt);
-        DataSourceUtils.releaseConnection(con, dataSource);
-    }
-
-    private Connection getConnection() throws SQLException {
-        Connection con = DataSourceUtils.getConnection(dataSource);
-        log.info("get Connection={}, class={}", con, con.getClass());
-        return con;
     }
 }
