@@ -48,7 +48,7 @@ public class StudentController {
 
     @ResponseBody
     @PostMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentParent profile(@RequestParam Long studentId) {
+    public StudentParent profile(@RequestBody Long studentId) {
         Student student = studentService.findById(studentId);
         if (student == null) {
             return null;
@@ -64,7 +64,7 @@ public class StudentController {
 
     @ResponseBody
     @PostMapping(path = "/withdraw", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void withdraw(@RequestParam Long studentId) {
+    public void withdraw(@RequestBody Long studentId) {
         studentService.withdraw(studentId);
     }
 
