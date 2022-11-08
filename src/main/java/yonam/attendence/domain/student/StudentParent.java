@@ -4,9 +4,10 @@ import lombok.Data;
 import yonam.attendence.domain.parent.Parent;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Data
-public class StudentParent {
+public class StudentParent implements Serializable {
     @NotNull
     private Student student;
     @NotNull
