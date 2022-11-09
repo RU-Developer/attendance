@@ -66,7 +66,6 @@ public class AttendanceService {
                 return;
             }
 
-            attendanceRepository.updateOutTime(attendance);
             messageService.send(new MessageForm(message, parent.getPhone()));
         }
     }
@@ -77,6 +76,7 @@ public class AttendanceService {
         Attendance attendance = new Attendance();
         attendance.setDateAttendance(dateAttendance);
         attendance.setInTime(inTime);
+        attendance.setConfirm(AttendanceConfirmConst.ATTENDANCE);
 
         for (Long studentId : studentIdList) {
             log.info("studentId={}", studentId);
@@ -101,7 +101,6 @@ public class AttendanceService {
             }
 
             log.info("attendance update");
-            attendanceRepository.updateInTime(attendance);
             messageService.send(new MessageForm(message, parent.getPhone()));
         }
     }

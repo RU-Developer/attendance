@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import yonam.attendence.domain.login.LoginForm;
 import yonam.attendence.domain.login.LoginService;
 import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.web.SessionConst;
@@ -53,6 +54,7 @@ public class LoginController {
     public LoginResult loginAndroid(@Validated @RequestBody LoginForm form,
                                     BindingResult bindingResult, HttpServletRequest request) {
 
+        log.info("id: {}, password: {}", form.getId(), form.getPassword());
         if (bindingResult.hasErrors()) {
             return new LoginResult(false);
         }

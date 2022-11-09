@@ -16,7 +16,7 @@ public class TeacherRepository extends AbstractRepository {
     }
 
     public Teacher save(Teacher teacher) throws SQLException {
-        String sql = "INSERT INTO teacher(id, password, name) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO teacher(name, belong, phone, login_id, lyceum_id) VALUES (?, ?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -24,9 +24,11 @@ public class TeacherRepository extends AbstractRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, teacher.getId());
-            pstmt.setString(2, teacher.getPassword());
-            pstmt.setString(3, teacher.getName());
+            pstmt.setString(1, teacher.getName());
+            pstmt.setString(2, teacher.getBelong());
+            pstmt.setString(3, teacher.getPhone());
+            pstmt.setString(4, teacher.getLoginId());
+            pstmt.setLong(5, teacher.getLyceumId());
             pstmt.executeUpdate();
 
             return teacher;
@@ -55,9 +57,11 @@ public class TeacherRepository extends AbstractRepository {
             if (rs.next()) {
                 Teacher teacher = new Teacher();
                 teacher.setLesson(rs.getLong("lesson"));
-                teacher.setId(rs.getString("id"));
-                teacher.setPassword(rs.getString("password"));
                 teacher.setName(rs.getString("name"));
+                teacher.setBelong(rs.getString("belong"));
+                teacher.setPhone(rs.getString("phone"));
+                teacher.setLoginId(rs.getString("login_id"));
+                teacher.setLyceumId(rs.getLong("lyceum_id"));
                 return teacher;
             }
         } catch (SQLException e) {
@@ -70,7 +74,7 @@ public class TeacherRepository extends AbstractRepository {
     }
 
     public Teacher findById(String id) {
-        String sql = "SELECT * FROM teacher WHERE id = ?";
+        String sql = "SELECT * FROM teacher WHERE login_id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -86,9 +90,11 @@ public class TeacherRepository extends AbstractRepository {
             if (rs.next()) {
                 Teacher teacher = new Teacher();
                 teacher.setLesson(rs.getLong("lesson"));
-                teacher.setId(rs.getString("id"));
-                teacher.setPassword(rs.getString("password"));
                 teacher.setName(rs.getString("name"));
+                teacher.setBelong(rs.getString("belong"));
+                teacher.setPhone(rs.getString("phone"));
+                teacher.setLoginId(rs.getString("login_id"));
+                teacher.setLyceumId(rs.getLong("lyceum_id"));
                 return teacher;
             }
 
@@ -102,7 +108,7 @@ public class TeacherRepository extends AbstractRepository {
     }
 
     public void update(Teacher teacher) {
-        String sql = "UPDATE teacher SET id = ?, password = ?, name = ? WHERE lesson = ?";
+        String sql = "UPDATE teacher SET name = ?, belong = ?, phone = ?, login_id = ?, lyceum_id = ? WHERE lesson = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -110,12 +116,12 @@ public class TeacherRepository extends AbstractRepository {
         try {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, teacher.getId());
-            pstmt.setString(2, teacher.getPassword());
-            pstmt.setString(3, teacher.getName());
-            pstmt.setLong(4, teacher.getLesson());
-            int resultSize = pstmt.executeUpdate();
-            log.info("resultSize={}", resultSize);
+            pstmt.setString(1, teacher.getName());
+            pstmt.setString(2, teacher.getBelong());
+            pstmt.setString(3, teacher.getLoginId());
+            pstmt.setLong(4, teacher.getLyceumId());
+            pstmt.setLong(5, teacher.getLesson());
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             log.error("db error", e);
         } finally {
@@ -133,8 +139,7 @@ public class TeacherRepository extends AbstractRepository {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
             pstmt.setLong(1, lesson);
-            int resultSize = pstmt.executeUpdate();
-            log.info("resultSize={}", resultSize);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
             log.error("db error", e);
         } finally {

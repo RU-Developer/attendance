@@ -37,12 +37,14 @@ public class AttendanceController {
     @ResponseBody
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void attendanceToday(@RequestBody List<Long> studentIdList) {
+        log.info("studentIdList: {}", studentIdList.toString());
         attendanceService.attendanceToday(studentIdList);
     }
 
     @ResponseBody
     @PostMapping(path = "/leave", produces = MediaType.APPLICATION_JSON_VALUE)
     public void leaveAcademyToday(@RequestBody List<Long> studentIdList) {
+        log.info("studentIdList: {}", studentIdList.toString());
         attendanceService.leaveAcademyToday(studentIdList);
     }
 
@@ -57,6 +59,7 @@ public class AttendanceController {
     @ResponseBody
     @PostMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
     public void studentUpdate(@RequestBody Attendance attendance) {
+        log.info("studentId: {}", attendance.getStudentId());
         attendanceService.updateAttendance(attendance);
     }
 }
