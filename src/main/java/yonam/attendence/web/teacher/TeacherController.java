@@ -49,7 +49,7 @@ public class TeacherController {
 
     @ResponseBody
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public TeacherAddResult saveAndroid(@Validated Teacher teacher, BindingResult bindingResult) {
+    public TeacherAddResult saveAndroid(@Validated @RequestBody Teacher teacher, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
 

@@ -8,7 +8,6 @@ import java.io.Serializable;
 @Data
 public class Teacher implements Serializable {
 
-    @NotEmpty
     private Long lesson;
 
     @NotEmpty
