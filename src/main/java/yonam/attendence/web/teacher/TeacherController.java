@@ -12,6 +12,7 @@ import yonam.attendence.domain.message.MessageForm;
 import yonam.attendence.domain.message.MessageResult;
 import yonam.attendence.domain.message.MessageService;
 import yonam.attendence.domain.teacher.Teacher;
+import yonam.attendence.domain.teacher.TeacherAddForm;
 import yonam.attendence.domain.teacher.TeacherService;
 import yonam.attendence.web.SessionConst;
 
@@ -32,12 +33,12 @@ public class TeacherController {
     }
 
     @PostMapping("/add")
-    public String save(@Validated @ModelAttribute Teacher teacher, BindingResult bindingResult) {
+    public String save(@Validated @ModelAttribute TeacherAddForm form, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "teachers/addTeacherForm";
         }
 
-        TeacherAddResult save = teacherService.save(teacher);
+        TeacherAddResult save = teacherService.save(form);
         if (!save.isSuccess()) {
             bindingResult.rejectValue("id", null,
                     new TeacherAddResultConstToMessage().resolveMessage(save.getMessage()));
@@ -49,7 +50,8 @@ public class TeacherController {
 
     @ResponseBody
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public TeacherAddResult saveAndroid(@Validated @RequestBody Teacher teacher, BindingResult bindingResult) {
+    public TeacherAddResult saveAndroid(@Validated @RequestBody TeacherAddForm form, BindingResult bindingResult) {
+        log.info("id: {}, password: {}", form.getId(), form.getPassword());
         if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
 
@@ -61,7 +63,7 @@ public class TeacherController {
             return new TeacherAddResult(false, sb.toString());
         }
 
-        return teacherService.save(teacher);
+        return teacherService.save(form);
     }
 
     @ResponseBody

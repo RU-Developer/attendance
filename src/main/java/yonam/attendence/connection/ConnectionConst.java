@@ -1,7 +1,7 @@
 package yonam.attendence.connection;
 
 public interface ConnectionConst {
-    String URL = "jdbc:mysql://localhost:29183/academy_v1?serverTimezone=UTC&characterEncoding=UTF-8";
+    String URL = "jdbc:mysql://localhost:29183/academy_v2?serverTimezone=UTC&characterEncoding=UTF-8";
     String USERNAME = "root";
     String PASSWORD = "!qhdks@root#";
 }

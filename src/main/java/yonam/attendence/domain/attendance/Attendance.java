@@ -22,5 +22,8 @@ public class Attendance implements Serializable {
     private LocalDateTime outTime;
 
     @NotEmpty
+    private String confirm;
+
+    @NotEmpty
     private Long studentId;
 }

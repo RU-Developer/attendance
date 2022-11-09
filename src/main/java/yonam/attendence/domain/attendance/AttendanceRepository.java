@@ -19,7 +19,7 @@ public class AttendanceRepository extends AbstractRepository {
     }
 
     public Attendance save(Attendance attendance) {
-        String sql = "INSERT INTO attendance(date_attendance, in_time, out_time, student_id) VALUES(?, ?, ?, ?)";
+        String sql = "INSERT INTO attendance(date_attendance, student_id, confirm) VALUES(?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -29,12 +29,8 @@ public class AttendanceRepository extends AbstractRepository {
             pstmt = con.prepareStatement(sql);
             pstmt.setDate(1, attendance.getDateAttendance() == null ? null :
                     Date.valueOf(attendance.getDateAttendance()));
-
-            pstmt.setTimestamp(2, attendance.getInTime() == null ? null :
-                    Timestamp.valueOf(attendance.getInTime()));
-            pstmt.setTimestamp(3, attendance.getOutTime() == null ? null :
-                    Timestamp.valueOf(attendance.getOutTime()));
-            pstmt.setLong(4, attendance.getStudentId());
+            pstmt.setLong(2, attendance.getStudentId());
+            pstmt.setString(3, attendance.getConfirm());
             pstmt.executeUpdate();
 
             return attendance;
@@ -65,11 +61,8 @@ public class AttendanceRepository extends AbstractRepository {
                 attendance.setId(rs.getLong("id"));
                 attendance.setDateAttendance(rs.getDate("date_attendance") == null ? null :
                         rs.getDate("date_attendance").toLocalDate());
-                attendance.setInTime(rs.getTimestamp("in_time") == null ? null :
-                        rs.getTimestamp("in_time").toLocalDateTime());
-                attendance.setOutTime(rs.getTimestamp("out_time") == null ? null :
-                        rs.getTimestamp("out_time").toLocalDateTime());
                 attendance.setStudentId(rs.getLong("student_id"));
+                attendance.setConfirm(rs.getString("confirm"));
                 return attendance;
             }
         } catch (SQLException e) {
@@ -101,11 +94,8 @@ public class AttendanceRepository extends AbstractRepository {
                 attendance.setId(rs.getLong("id"));
                 attendance.setDateAttendance(rs.getDate("date_attendance") == null ? null :
                         rs.getDate("date_attendance").toLocalDate());
-                attendance.setInTime(rs.getTimestamp("in_time") == null ? null :
-                        rs.getTimestamp("in_time").toLocalDateTime());
-                attendance.setOutTime(rs.getTimestamp("out_time") == null ? null :
-                        rs.getTimestamp("out_time").toLocalDateTime());
                 attendance.setStudentId(rs.getLong("student_id"));
+                attendance.setConfirm(rs.getString("confirm"));
                 attendances.add(attendance);
             }
 
@@ -139,11 +129,8 @@ public class AttendanceRepository extends AbstractRepository {
                 attendance.setId(rs.getLong("id"));
                 attendance.setDateAttendance(rs.getDate("date_attendance") == null ? null :
                         rs.getDate("date_attendance").toLocalDate());
-                attendance.setInTime(rs.getTimestamp("in_time") == null ? null :
-                        rs.getTimestamp("in_time").toLocalDateTime());
-                attendance.setOutTime(rs.getTimestamp("out_time") == null ? null :
-                        rs.getTimestamp("out_time").toLocalDateTime());
                 attendance.setStudentId(rs.getLong("student_id"));
+                attendance.setConfirm(rs.getString("confirm"));
                 return attendance;
             }
         } catch (SQLException e) {
@@ -156,7 +143,7 @@ public class AttendanceRepository extends AbstractRepository {
     }
 
     public void update(Attendance attendance) {
-        String sql = "UPDATE attendance SET date_attendance = ?, in_time = ?, out_time = ?, student_id = ? WHERE id = ?";
+        String sql = "UPDATE attendance SET date_attendance = ?, student_id = ?, confirm = ? WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -166,60 +153,13 @@ public class AttendanceRepository extends AbstractRepository {
             pstmt = con.prepareStatement(sql);
             pstmt.setDate(1, attendance.getDateAttendance() == null ? null :
                     Date.valueOf(attendance.getDateAttendance()));
-            pstmt.setTimestamp(2, attendance.getInTime() == null ? null :
-                    Timestamp.valueOf(attendance.getInTime()));
-            pstmt.setTimestamp(3, attendance.getOutTime() == null ? null :
-                    Timestamp.valueOf(attendance.getOutTime()));
-            pstmt.setLong(4, attendance.getStudentId());
-            pstmt.setLong(5, attendance.getId());
+            pstmt.setLong(2, attendance.getStudentId());
+            pstmt.setString(3, attendance.getConfirm());
+            pstmt.setLong(4, attendance.getId());
             int resultSize = pstmt.executeUpdate();
             log.info("resultSize = {}", resultSize);
         } catch (SQLException e) {
             log.error("db error", e);
-        } finally {
-            close(con, pstmt, null);
-        }
-    }
-
-    public void updateInTime(Attendance attendance) {
-        String sql = "UPDATE attendance SET in_time = ? WHERE date_attendance = ? AND student_id = ?";
-
-        Connection con = null;
-        PreparedStatement pstmt = null;
-
-        try {
-            con = getConnection();
-            pstmt = con.prepareStatement(sql);
-            pstmt.setTimestamp(1, attendance.getInTime() == null ? null :
-                    Timestamp.valueOf(attendance.getInTime()));
-            pstmt.setDate(2, attendance.getDateAttendance() == null ? null :
-                    Date.valueOf(attendance.getDateAttendance()));
-            pstmt.setLong(3, attendance.getStudentId());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            log.error("updateInTime error", e);
-        } finally {
-            close(con, pstmt, null);
-        }
-    }
-
-    public void updateOutTime(Attendance attendance) {
-        String sql = "UPDATE attendance SET out_time = ? WHERE date_attendance = ? AND student_id = ?";
-
-        Connection con = null;
-        PreparedStatement pstmt = null;
-
-        try {
-            con = getConnection();
-            pstmt = con.prepareStatement(sql);
-            pstmt.setTimestamp(1, attendance.getOutTime() == null ? null :
-                    Timestamp.valueOf(attendance.getOutTime()));
-            pstmt.setDate(2, attendance.getDateAttendance() == null ? null :
-                    Date.valueOf(attendance.getDateAttendance()));
-            pstmt.setLong(3, attendance.getStudentId());
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            log.error("update OutTime error", e);
         } finally {
             close(con, pstmt, null);
         }
