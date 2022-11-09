@@ -50,7 +50,7 @@ public class LoginController {
 
     @ResponseBody
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public LoginResult loginAndroid(@Validated LoginForm form,
+    public LoginResult loginAndroid(@Validated @RequestBody LoginForm form,
                                     BindingResult bindingResult, HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
