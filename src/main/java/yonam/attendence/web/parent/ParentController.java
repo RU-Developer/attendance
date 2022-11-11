@@ -13,11 +13,13 @@ import yonam.attendence.domain.message.MessageService;
 import yonam.attendence.domain.message.ValidationForm;
 import yonam.attendence.domain.parent.Parent;
 import yonam.attendence.domain.parent.ParentService;
+import yonam.attendence.domain.student.Student;
 import yonam.attendence.domain.util.Util;
 import yonam.attendence.web.SessionConst;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -173,5 +175,12 @@ public class ParentController {
         log.info("sendvalidation result = {}", messageResult.isSuccess());
 
         return messageResult;
+    }
+
+    @ResponseBody
+    @GetMapping(path = "/students", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Student> children(HttpServletRequest request) {
+        Parent loginedParent = (Parent) request.getSession().getAttribute(SessionConst.LOGIN_PARENT);
+        return parentService.children(loginedParent.getId());
     }
 }

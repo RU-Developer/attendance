@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import yonam.attendence.domain.student.Student;
+import yonam.attendence.domain.student.StudentRepository;
 import yonam.attendence.web.parent.ParentLoginForm;
+
+import java.util.List;
 
 @Transactional
 @Slf4j
@@ -13,6 +17,7 @@ import yonam.attendence.web.parent.ParentLoginForm;
 public class ParentService {
 
     private final ParentRepository parentRepository;
+    private final StudentRepository studentRepository;
 
     public Parent login(ParentLoginForm form) {
 
@@ -27,5 +32,9 @@ public class ParentService {
 
     public Parent findById(Long parentId) {
         return parentRepository.findById(parentId);
+    }
+
+    public List<Student> children(Long parentId) {
+        return studentRepository.findByParentId(parentId);
     }
 }
