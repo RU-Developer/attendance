@@ -14,6 +14,8 @@ import yonam.attendence.domain.message.ValidationForm;
 import yonam.attendence.domain.parent.Parent;
 import yonam.attendence.domain.parent.ParentService;
 import yonam.attendence.domain.student.Student;
+import yonam.attendence.domain.student.StudentService;
+import yonam.attendence.domain.student.StudentTeacher;
 import yonam.attendence.domain.util.Util;
 import yonam.attendence.web.SessionConst;
 
@@ -28,6 +30,7 @@ import java.util.List;
 public class ParentController {
 
     private final ParentService parentService;
+    private final StudentService studentService;
     private final MessageService messageService;
 
     @GetMapping("/login")
@@ -182,5 +185,12 @@ public class ParentController {
     public List<Student> children(HttpServletRequest request) {
         Parent loginedParent = (Parent) request.getSession().getAttribute(SessionConst.LOGIN_PARENT);
         return parentService.children(loginedParent.getId());
+    }
+
+    @ResponseBody
+    @GetMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
+    public StudentTeacher student(@RequestParam Long studentId, HttpServletRequest request) {
+        Parent loginedParent = (Parent) request.getSession().getAttribute(SessionConst.LOGIN_PARENT);
+        return studentService.findStudentTeacher(studentId, loginedParent.getId());
     }
 }

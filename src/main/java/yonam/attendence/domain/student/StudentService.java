@@ -7,10 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import yonam.attendence.domain.attendance.AttendanceRepository;
 import yonam.attendence.domain.parent.Parent;
 import yonam.attendence.domain.parent.ParentRepository;
+import yonam.attendence.domain.teacher.Teacher;
+import yonam.attendence.domain.teacher.TeacherRepository;
 import yonam.attendence.domain.util.Util;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Transactional
@@ -20,6 +23,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final ParentRepository parentRepository;
+    private final TeacherRepository teacherRepository;
     private final AttendanceRepository attendanceRepository;
 
     public Student findById(Long id) {
@@ -110,5 +114,18 @@ public class StudentService {
         }
 
         return studentParent;
+    }
+
+    public StudentTeacher findStudentTeacher(Long studentId, Long parentId) {
+        Student student = studentRepository.findById(studentId);
+        if (!Objects.equals(student.getParentId(), parentId)) {
+            return null;
+        }
+
+        Teacher teacher = teacherRepository.findByLesson(student.getTeacherLesson());
+        StudentTeacher result = new StudentTeacher();
+        result.setStudent(student);
+        result.setTeacher(teacher);
+        return result;
     }
 }
