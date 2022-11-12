@@ -43,6 +43,7 @@ public class TeacherService {
             saveTeacher.setLyceumId(1L);
             saveTeacher.setLoginId(form.getId());
             saveTeacher.setName(form.getName());
+            saveTeacher.setPhone(form.getPhone());
             saveTeacher = teacherRepository.save(saveTeacher);
         } catch (SQLException e) {
             message = e.getMessage();

@@ -16,4 +16,7 @@ public class TeacherAddForm implements Serializable {
 
     @NotEmpty
     private String name;
+
+    @NotEmpty
+    private String phone;
 }

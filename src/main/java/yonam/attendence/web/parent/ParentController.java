@@ -47,9 +47,9 @@ public class ParentController {
         form.setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(form.getPhone()));
 
         HttpSession session = request.getSession();
-        log.info("form phone : session validated = {} : {}", form.getPhone(), (String) session.getAttribute(SessionConst.LOGIN_PARENT_VALIDATED));
+        log.info("form phone : session validated = {} : {}", form.getPhone(), (String) session.getAttribute(SessionConst.PHONE_VALIDATED));
 
-        if (!form.getPhone().equals((String) session.getAttribute(SessionConst.LOGIN_PARENT_VALIDATED))) {
+        if (!form.getPhone().equals((String) session.getAttribute(SessionConst.PHONE_VALIDATED))) {
             bindingResult.rejectValue("phone", "휴대폰 번호를 인증해야 합니다.");
             return "parents/loginForm";
         }
@@ -78,7 +78,7 @@ public class ParentController {
 
         HttpSession session = request.getSession();
 
-        if (!form.getPhone().equals(session.getAttribute(SessionConst.LOGIN_PARENT_VALIDATED))) {
+        if (!form.getPhone().equals(session.getAttribute(SessionConst.PHONE_VALIDATED))) {
             bindingResult.rejectValue("phone", "휴대폰 번호를 인증해야 합니다.");
             return new ParentLoginResult(false);
         }
@@ -109,8 +109,8 @@ public class ParentController {
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_PARENT_VALIDATED, validatedPhone);
-        log.info("validatedPhone={}", (String) session.getAttribute(SessionConst.LOGIN_PARENT_VALIDATED));
+        session.setAttribute(SessionConst.PHONE_VALIDATED, validatedPhone);
+        log.info("validatedPhone={}", (String) session.getAttribute(SessionConst.PHONE_VALIDATED));
         return "redirect:/parents/login";
     }
 
@@ -129,7 +129,7 @@ public class ParentController {
         }
 
         HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_PARENT_VALIDATED, validatedPhone);
+        session.setAttribute(SessionConst.PHONE_VALIDATED, validatedPhone);
         return new ValidationResult(true);
     }
 

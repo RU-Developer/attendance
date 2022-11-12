@@ -43,7 +43,7 @@ public class MessageService {
         }
 
         String validationCode = String.valueOf(generateValidationCode());
-        String message = "학부모 휴대폰 인증번호 발송 메시지입니다. 인증번호 : [" + validationCode + "]";
+        String message = "학원 출결관리앱 휴대폰 인증번호 발송 서비스입니다. 인증번호 : [" + validationCode + "]";
         MessageForm messageForm = new MessageForm(message, phone);
         MessageResult result = send(messageForm);
         if (result.isSuccess()) {
