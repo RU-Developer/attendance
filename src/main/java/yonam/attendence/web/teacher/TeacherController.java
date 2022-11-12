@@ -79,23 +79,6 @@ public class TeacherController {
     }
 
     @ResponseBody
-    @PostMapping("/sendMessage")
-    public MessageResult sendMessage(@Validated MessageForm messageForm, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            StringBuilder sb = new StringBuilder();
-
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                sb.append(error.getDefaultMessage());
-                sb.append("\n");
-            }
-
-            return new MessageResult(false, sb.toString());
-        }
-
-        return messageService.send(messageForm);
-    }
-
-    @ResponseBody
     @PostMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public Teacher profile(HttpServletRequest request) {
         return (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);

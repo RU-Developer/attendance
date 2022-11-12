@@ -8,6 +8,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import yonam.attendence.domain.attendance.Attendance;
+import yonam.attendence.domain.attendance.AttendanceService;
 import yonam.attendence.domain.message.MessageResult;
 import yonam.attendence.domain.message.MessageService;
 import yonam.attendence.domain.message.ValidationForm;
@@ -22,6 +24,7 @@ import yonam.attendence.web.SessionConst;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -29,6 +32,7 @@ import java.util.List;
 @RequestMapping("/parents")
 public class ParentController {
 
+    private final AttendanceService attendanceService;
     private final ParentService parentService;
     private final StudentService studentService;
     private final MessageService messageService;
@@ -192,5 +196,16 @@ public class ParentController {
     public StudentTeacher student(@RequestParam Long studentId, HttpServletRequest request) {
         Parent loginedParent = (Parent) request.getSession().getAttribute(SessionConst.LOGIN_PARENT);
         return studentService.findStudentTeacher(studentId, loginedParent.getId());
+    }
+
+    @ResponseBody
+    @GetMapping(path = "/student/attendances", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Attendance> studentAttendances(@RequestParam Long studentId, HttpServletRequest request) {
+        Parent loginedParent = (Parent) request.getSession().getAttribute(SessionConst.LOGIN_PARENT);
+        Student student = studentService.findById(studentId);
+        if (!Objects.equals(student.getParentId(), loginedParent.getId())) {
+            return null;
+        }
+        return attendanceService.studentAttendances(studentId);
     }
 }
