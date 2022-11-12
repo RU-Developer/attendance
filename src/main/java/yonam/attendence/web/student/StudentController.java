@@ -18,6 +18,7 @@ import yonam.attendence.domain.student.StudentParent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -48,9 +49,14 @@ public class StudentController {
 
     @ResponseBody
     @PostMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentParent profile(@RequestBody Long studentId) {
+    public StudentParent profile(@RequestBody Long studentId, HttpServletRequest request) {
         Student student = studentService.findById(studentId);
         if (student == null) {
+            return null;
+        }
+
+        Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
+        if (!Objects.equals(student.getTeacherLesson(), loginTeacher.getLesson())) {
             return null;
         }
 
@@ -64,13 +70,15 @@ public class StudentController {
 
     @ResponseBody
     @PostMapping(path = "/withdraw", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void withdraw(@RequestBody Long studentId) {
-        studentService.withdraw(studentId);
+    public void withdraw(@RequestBody Long studentId, HttpServletRequest request) {
+        Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
+        studentService.withdraw(studentId, loginTeacher.getLesson());
     }
 
     @ResponseBody
     @PutMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void update(@RequestBody StudentParent studentParent) {
-        studentService.updateStudentParent(studentParent);
+    public void update(@RequestBody StudentParent studentParent, HttpServletRequest request) {
+        Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
+        studentService.updateStudentParent(studentParent, loginTeacher.getLesson());
     }
 }

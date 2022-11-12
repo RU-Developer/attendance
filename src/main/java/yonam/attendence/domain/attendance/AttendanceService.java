@@ -14,6 +14,7 @@ import yonam.attendence.domain.student.StudentRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Transactional
@@ -36,7 +37,7 @@ public class AttendanceService {
         return attendanceRepository.findByStudentId(studentId);
     }
 
-    public void leaveAcademyToday(List<Long> studentIdList) {
+    public void leaveAcademyToday(List<Long> studentIdList, Long lesson) {
         LocalDate dateAttendance = LocalDate.now();
         LocalDateTime outTime = LocalDateTime.now();
         Attendance attendance = new Attendance();
@@ -47,6 +48,10 @@ public class AttendanceService {
             Student student = studentRepository.findById(studentId);
 
             if (student == null) {
+                continue;
+            }
+
+            if (!Objects.equals(student.getTeacherLesson(), lesson)) {
                 continue;
             }
 
@@ -70,7 +75,7 @@ public class AttendanceService {
         }
     }
 
-    public void attendanceToday(List<Long> studentIdList) {
+    public void attendanceToday(List<Long> studentIdList, Long lesson) {
         LocalDate dateAttendance = LocalDate.now();
         LocalDateTime inTime = LocalDateTime.now();
         Attendance attendance = new Attendance();
@@ -82,6 +87,9 @@ public class AttendanceService {
             log.info("studentId={}", studentId);
             Student student = studentRepository.findById(studentId);
             if (student == null) {
+                continue;
+            }
+            if (!Objects.equals(student.getTeacherLesson(), lesson)) { //담당강사가 일치하지 않으면 다른학생
                 continue;
             }
             Parent parent = parentRepository.findById(student.getParentId());

@@ -16,6 +16,7 @@ import yonam.attendence.web.SessionConst;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -36,30 +37,41 @@ public class AttendanceController {
 
     @ResponseBody
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public void attendanceToday(@RequestBody List<Long> studentIdList) {
+    public void attendanceToday(@RequestBody List<Long> studentIdList, HttpServletRequest request) {
         log.info("studentIdList: {}", studentIdList.toString());
-        attendanceService.attendanceToday(studentIdList);
+        Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
+        attendanceService.attendanceToday(studentIdList, loginTeacher.getLesson());
     }
 
     @ResponseBody
     @PostMapping(path = "/leave", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void leaveAcademyToday(@RequestBody List<Long> studentIdList) {
+    public void leaveAcademyToday(@RequestBody List<Long> studentIdList, HttpServletRequest request) {
         log.info("studentIdList: {}", studentIdList.toString());
-        attendanceService.leaveAcademyToday(studentIdList);
+        Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
+        attendanceService.leaveAcademyToday(studentIdList, loginTeacher.getLesson());
     }
 
     @ResponseBody
     @GetMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AttendanceStudentResult studentForm(@RequestParam Long studentId) {
+    public AttendanceStudentResult studentForm(@RequestParam Long studentId, HttpServletRequest request) {
         log.info("studentId={}", studentId);
         Student student = studentService.findById(studentId);
+        Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
+        if (!Objects.equals(student.getTeacherLesson(), loginTeacher.getLesson())) {
+            return null;
+        }
         return new AttendanceStudentResult(student, attendanceService.studentAttendances(studentId));
     }
 
     @ResponseBody
     @PostMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void studentUpdate(@RequestBody Attendance attendance) {
+    public void studentUpdate(@RequestBody Attendance attendance, HttpServletRequest request) {
         log.info("studentId: {}", attendance.getStudentId());
+        Student student = studentService.findById(attendance.getStudentId());
+        Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
+        if (!Objects.equals(student.getTeacherLesson(), loginTeacher.getLesson())) {
+            return;
+        }
         attendanceService.updateAttendance(attendance);
     }
 }

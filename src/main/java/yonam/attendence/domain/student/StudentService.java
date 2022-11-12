@@ -34,9 +34,13 @@ public class StudentService {
         return studentRepository.studentParentByTeacherLesson(lesson);
     }
 
-    public void withdraw(Long studentId) {
+    public void withdraw(Long studentId, Long lesson) {
         Student student = studentRepository.findById(studentId);
         if (student == null) {
+            return;
+        }
+
+        if (!Objects.equals(student.getTeacherLesson(), lesson)) {
             return;
         }
 
@@ -55,11 +59,15 @@ public class StudentService {
         }
     }
 
-    public void updateStudentParent(StudentParent studentParent) {
+    public void updateStudentParent(StudentParent studentParent, Long lesson) {
         log.info("studentid = {}", studentParent.getStudent().getId());
         Student student = studentRepository.findById(studentParent.getStudent().getId());
         if (student == null) {
             log.info("student == null");
+            return;
+        }
+
+        if (Objects.equals(student.getTeacherLesson(), lesson)) {
             return;
         }
 
