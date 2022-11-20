@@ -28,9 +28,21 @@ public class AttendanceService {
     private final MessageService messageService;
 
 
-
     public void updateAttendance(Attendance attendance) {
-        attendanceRepository.update(attendance);
+        log.info("AttendanceService.updateAttendance");
+        Attendance validated = attendanceRepository.findById(attendance.getId());
+        validated.setDateAttendance(attendance.getDateAttendance());
+        attendanceRepository.updateDateAttendance(validated);
+    }
+
+    public void deleteAttendance(Long attendanceId, Long lesson) {
+        log.info("AttendanceService.deleteAttendance");
+        Long studentId = attendanceRepository.findById(attendanceId).getStudentId();
+        Student student = studentRepository.findById(studentId);
+        if (!Objects.equals(student.getTeacherLesson(), lesson)) {
+            return;
+        }
+        attendanceRepository.delete(attendanceId);
     }
 
     public List<Attendance> studentAttendances(Long studentId) {
@@ -42,35 +54,32 @@ public class AttendanceService {
         LocalDateTime outTime = LocalDateTime.now();
         Attendance attendance = new Attendance();
         attendance.setDateAttendance(dateAttendance);
-        attendance.setOutTime(outTime);
 
         for (Long studentId : studentIdList) {
             Student student = studentRepository.findById(studentId);
+            log.info("leaveAcademyToday studentId = {}", studentId);
 
-            if (student == null) {
-                continue;
-            }
-
-            if (!Objects.equals(student.getTeacherLesson(), lesson)) {
+            if (student == null || !Objects.equals(student.getTeacherLesson(), lesson)) {
+                log.error("해당 강사의 담당 학생 찾을 수 없음");
                 continue;
             }
 
             Parent parent = parentRepository.findById(student.getParentId());
 
             if (parent == null) {
+                log.error("해당 학생의 부모 데이터를 찾을 수 없음");
                 continue;
             }
 
             String message = getMessage(outTime, "하원", student);
-
             attendance.setStudentId(studentId);
 
             if (attendanceRepository.findByDateAttendanceWithStudentId(dateAttendance, studentId) == null) {
+                log.info("attendance save");
                 attendanceRepository.save(attendance);
-                messageService.send(new MessageForm(message, parent.getPhone()));
-                return;
             }
 
+            log.info("message = {}", message);
             messageService.send(new MessageForm(message, parent.getPhone()));
         }
     }
@@ -80,55 +89,41 @@ public class AttendanceService {
         LocalDateTime inTime = LocalDateTime.now();
         Attendance attendance = new Attendance();
         attendance.setDateAttendance(dateAttendance);
-        attendance.setInTime(inTime);
-        attendance.setConfirm(AttendanceConfirmConst.ATTENDANCE);
 
         for (Long studentId : studentIdList) {
-            log.info("studentId={}", studentId);
+            log.info("attendanceToday studentId={}", studentId);
             Student student = studentRepository.findById(studentId);
-            if (student == null) {
+            if (student == null || !Objects.equals(student.getTeacherLesson(), lesson)) {
+                log.error("해당 강사의 담당 학생 찾을 수 없음");
                 continue;
             }
-            if (!Objects.equals(student.getTeacherLesson(), lesson)) { //담당강사가 일치하지 않으면 다른학생
-                continue;
-            }
+
             Parent parent = parentRepository.findById(student.getParentId());
             if (parent == null) {
+                log.error("해당 학생의 부모 데이터를 찾을 수 없음");
                 continue;
             }
             String message = getMessage(inTime, "등원", student);
-
-            log.info("message = {}", message);
             attendance.setStudentId(studentId);
 
             if (attendanceRepository.findByDateAttendanceWithStudentId(dateAttendance, studentId) == null) {
                 log.info("attendance save");
                 attendanceRepository.save(attendance);
-                messageService.send(new MessageForm(message, parent.getPhone()));
-                continue;
             }
-
-            log.info("attendance update");
+            log.info("message = {}", message);
             messageService.send(new MessageForm(message, parent.getPhone()));
         }
     }
 
     private String getMessage(LocalDateTime time, String method, Student student) {
         StringBuilder message = new StringBuilder("[학원 " + method + " 알림 메시지] ");
-        message.append(student.getName());
-        message.append("학생이 ");
-        message.append(time.getYear());
-        message.append("년 ");
-        message.append(time.getMonthValue());
-        message.append("월 ");
-        message.append(time.getDayOfMonth());
-        message.append("일 ");
-        message.append(time.getHour());
-        message.append("시 ");
-        message.append(time.getMinute());
-        message.append("분에 ");
-        message.append(method);
-        message.append("하였습니다.");
+        message.append(student.getName()).append("학생이 ")
+                .append(time.getYear()).append("년 ")
+                .append(time.getMonthValue()).append("월 ")
+                .append(time.getDayOfMonth()).append("일 ")
+                .append(time.getHour()).append("시 ")
+                .append(time.getMinute()).append("분에 ")
+                .append(method).append("하였습니다.");
         return message.toString();
     }
 }

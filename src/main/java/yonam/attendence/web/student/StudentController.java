@@ -32,6 +32,7 @@ public class StudentController {
     @ResponseBody
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StudentParent> student(HttpServletRequest request) {
+        log.info("StudentController.student");
         HttpSession session = request.getSession();
         Teacher loginTeacher = (Teacher) session.getAttribute(SessionConst.LOGIN_TEACHER);
         return studentService.studentParentWithTeacherLesson(loginTeacher.getLesson());
@@ -40,6 +41,7 @@ public class StudentController {
     @ResponseBody
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public void save(@Validated @RequestBody StudentParent studentParent, HttpServletRequest request) {
+        log.info("StudentController.save");
         studentParent.getStudent().setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(studentParent.getStudent().getPhone()));
         studentParent.getParent().setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(studentParent.getParent().getPhone()));
         Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
@@ -50,6 +52,7 @@ public class StudentController {
     @ResponseBody
     @PostMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public StudentParent profile(@RequestBody Long studentId, HttpServletRequest request) {
+        log.info("StudentController.profile");
         Student student = studentService.findById(studentId);
         if (student == null) {
             return null;
@@ -71,6 +74,7 @@ public class StudentController {
     @ResponseBody
     @PostMapping(path = "/withdraw", produces = MediaType.APPLICATION_JSON_VALUE)
     public void withdraw(@RequestBody Long studentId, HttpServletRequest request) {
+        log.info("StudentController.withdraw");
         Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
         studentService.withdraw(studentId, loginTeacher.getLesson());
     }
@@ -78,6 +82,7 @@ public class StudentController {
     @ResponseBody
     @PutMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public void update(@RequestBody StudentParent studentParent, HttpServletRequest request) {
+        log.info("StudentController.profile");
         Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
         studentService.updateStudentParent(studentParent, loginTeacher.getLesson());
     }

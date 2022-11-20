@@ -37,46 +37,11 @@ public class ParentController {
     private final StudentService studentService;
     private final MessageService messageService;
 
-    @GetMapping("/login")
-    public String parentLoginForm(@ModelAttribute("loginForm") ParentLoginForm form) {
-        return "parents/loginForm";
-    }
-
-    @PostMapping("/login")
-    public String login(@Validated @ModelAttribute("loginForm") ParentLoginForm form, BindingResult bindingResult,
-                        @RequestParam(defaultValue = "/") String redirectURL,
-                        HttpServletRequest request) {
-
-        if (bindingResult.hasErrors()) {
-            return "parents/loginForm";
-        }
-
-        form.setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(form.getPhone()));
-
-        HttpSession session = request.getSession();
-        log.info("form phone : session validated = {} : {}", form.getPhone(), (String) session.getAttribute(SessionConst.PHONE_VALIDATED));
-
-        if (!form.getPhone().equals((String) session.getAttribute(SessionConst.PHONE_VALIDATED))) {
-            bindingResult.rejectValue("phone", "휴대폰 번호를 인증해야 합니다.");
-            return "parents/loginForm";
-        }
-
-        Parent loginParent = parentService.login(form);
-
-        if (loginParent == null) {
-            bindingResult.rejectValue("phone", "학생번호와 부모님 번호로 찾을 수 있는 계정이 없습니다.");
-            return "parents/loginForm";
-        }
-        session.setAttribute(SessionConst.LOGIN_PARENT, loginParent);
-
-        return "redirect:" + redirectURL;
-    }
 
     @ResponseBody
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ParentLoginResult loginAndroid(@Validated @RequestBody ParentLoginForm form, BindingResult bindingResult,
-                                          HttpServletRequest request) {
-
+    public ParentLoginResult login(@Validated @RequestBody ParentLoginForm form, BindingResult bindingResult,
+                                   HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return new ParentLoginResult(false);
         }
@@ -101,29 +66,9 @@ public class ParentController {
         return new ParentLoginResult(true);
     }
 
-    @PostMapping("/validation")
-    public String validation(@Validated ValidationForm form, BindingResult bindingResult,
-                             HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            return "redirect:/parents/login";
-        }
-
-        String validatedPhone = messageService.phoneValidation(form.getValidationCode());
-        log.info("validatedPhone={}", validatedPhone);
-
-        if (validatedPhone == null) {
-            return "redirect:/parents/login";
-        }
-
-        HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.PHONE_VALIDATED, validatedPhone);
-        log.info("validatedPhone={}", (String) session.getAttribute(SessionConst.PHONE_VALIDATED));
-        return "redirect:/parents/login";
-    }
-
     @ResponseBody
     @PostMapping(path = "/validation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ValidationResult validationAndroid(@Validated @RequestBody ValidationForm form, BindingResult bindingResult,
+    public ValidationResult validation(@Validated @RequestBody ValidationForm form, BindingResult bindingResult,
                                               HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return new ValidationResult(false);
@@ -140,32 +85,9 @@ public class ParentController {
         return new ValidationResult(true);
     }
 
-    @PostMapping("/sendvalidation")
-    public String sendValidation(@Validated @ModelAttribute("loginForm") ParentLoginForm form, BindingResult bindingResult) {
-        log.info("/sendvalidation html");
-        if (bindingResult.hasErrors()) {
-            return "redirect:/parents/login";
-        }
-
-        log.info("phone={}", form.getPhone());
-
-        form.setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(form.getPhone()));
-        MessageResult messageResult = messageService.sendPhoneValidation(form.getPhone());
-        log.info("sendvalidation result = {}", messageResult.isSuccess());
-
-        if (messageResult.isSuccess()) {
-            bindingResult.reject(null, null, "인증번호가 발송되었습니다.");
-            return "redirect:/parents/login";
-        }
-
-        bindingResult.rejectValue("phone", null,
-                "인증번호 발송에 실패하였습니다. 잠시후 재시도 해주시기 바랍니다.");
-        return "redirect:/parents/login";
-    }
-
     @ResponseBody
     @PostMapping(path = "/sendvalidation", produces = MediaType.APPLICATION_JSON_VALUE)
-    public MessageResult sendValidationAndroid(@Validated @RequestBody ParentLoginForm form, BindingResult bindingResult) {
+    public MessageResult sendValidation(@Validated @RequestBody ParentLoginForm form, BindingResult bindingResult) {
         log.info("/sendvalidation android");
         if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();

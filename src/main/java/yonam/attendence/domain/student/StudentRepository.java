@@ -1,6 +1,5 @@
 package yonam.attendence.domain.student;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import yonam.attendence.domain.AbstractRepository;
@@ -20,8 +19,8 @@ public class StudentRepository extends AbstractRepository {
     }
 
     public Student save(Student student) {
-        String sql = "INSERT INTO student(name, phone, tuition, reg_date, parent_id, teacher_lesson) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO student(name, phone, parent_id, teacher_lesson) " +
+                "VALUES (?, ?, ?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -31,15 +30,12 @@ public class StudentRepository extends AbstractRepository {
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, student.getName());
             pstmt.setString(2, student.getPhone());
-            pstmt.setLong(3, student.getTuition());
-            pstmt.setDate(4, student.getRegDate() == null ? null :
-                    Date.valueOf(student.getRegDate()));
-            pstmt.setLong(5, student.getParentId());
-            pstmt.setLong(6, student.getTeacherLesson());
+            pstmt.setLong(3, student.getParentId());
+            pstmt.setLong(4, student.getTeacherLesson());
             pstmt.executeUpdate();
             return student;
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("StudentRepository.save error : ", e);
         } finally {
             close(con, pstmt, null);
         }
@@ -65,15 +61,12 @@ public class StudentRepository extends AbstractRepository {
                 student.setId(rs.getLong("id"));
                 student.setName(rs.getString("name"));
                 student.setPhone(rs.getString("phone"));
-                student.setTuition(rs.getLong("tuition"));
-                student.setRegDate(rs.getDate("reg_date") == null ? null :
-                        rs.getDate("reg_date").toLocalDate());
                 student.setParentId(rs.getLong("parent_id"));
                 student.setTeacherLesson(rs.getLong("teacher_lesson"));
                 return student;
             }
         } catch (SQLException e) {
-            log.error("student db error", e);
+            log.error("StudentRepository.findById error : ", e);
         } finally {
             close(con, pstmt, rs);
         }
@@ -102,16 +95,13 @@ public class StudentRepository extends AbstractRepository {
                 student.setPhone(rs.getString("phone"));
                 student.setName(rs.getString("name"));
                 student.setParentId(rs.getLong("parent_id"));
-                student.setTuition(rs.getLong("tuition"));
-                student.setRegDate(rs.getDate("reg_date") == null ? null :
-                        rs.getDate("reg_date").toLocalDate());
                 student.setTeacherLesson(rs.getLong("teacher_lesson"));
                 students.add(student);
             }
 
             return students;
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("StudentRepository.findByTeacherLesson error : ", e);
         } finally {
             close(con, pstmt, rs);
         }
@@ -140,16 +130,12 @@ public class StudentRepository extends AbstractRepository {
                 student.setPhone(rs.getString("phone"));
                 student.setName(rs.getString("name"));
                 student.setParentId(rs.getLong("parent_id"));
-                student.setTuition(rs.getLong("tuition"));
-                student.setRegDate(rs.getDate("reg_date") == null ? null :
-                        rs.getDate("reg_date").toLocalDate());
                 student.setTeacherLesson(rs.getLong("teacher_lesson"));
                 students.add(student);
             }
-
             return students;
         } catch (SQLException e) {
-            log.error("student db error", e);
+            log.error("StudentRepository.findByParentId error : ", e);
         } finally {
             close(con, pstmt, rs);
         }
@@ -158,7 +144,7 @@ public class StudentRepository extends AbstractRepository {
     }
 
     public List<StudentParent> studentParentByTeacherLesson(Long teacherLesson) {
-        String sql = "SELECT s.id, s.phone, s.name, s.tuition, s.reg_date, s.teacher_lesson, p.id, p.phone, p.name " +
+        String sql = "SELECT s.id, s.phone, s.name, s.teacher_lesson, p.id, p.phone, p.name " +
                 "FROM student s, parent p " +
                 "WHERE s.teacher_lesson = ? AND s.parent_id = p.id";
 
@@ -182,9 +168,6 @@ public class StudentRepository extends AbstractRepository {
                 student.setName(rs.getString("s.name"));
                 student.setPhone(rs.getString("s.phone"));
                 student.setParentId(rs.getLong("p.id"));
-                student.setTuition(rs.getLong("s.tuition"));
-                student.setRegDate(rs.getDate("reg_date") == null ? null :
-                        rs.getDate("reg_date").toLocalDate());
                 student.setTeacherLesson(rs.getLong("s.teacher_lesson"));
 
                 parent.setId(rs.getLong("p.id"));
@@ -197,7 +180,7 @@ public class StudentRepository extends AbstractRepository {
 
             return studentParentAttendances;
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("StudentRepository.studentParentByTeacherLesson error : ", e);
         } finally {
             close(con, pstmt, rs);
         }
@@ -207,8 +190,7 @@ public class StudentRepository extends AbstractRepository {
 
     public void update(Student student) {
         String sql = "UPDATE student " +
-                "SET name = ?, phone = ?, tuition = ?, reg_date = ?, parent_id = ?, teacher_lesson = ? " +
-                " WHERE id = ?";
+                "SET name = ?, phone = ?, parent_id = ?, teacher_lesson = ? WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -218,16 +200,12 @@ public class StudentRepository extends AbstractRepository {
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, student.getName());
             pstmt.setString(2, student.getPhone());
-            pstmt.setLong(3, student.getTuition());
-            pstmt.setDate(4, student.getRegDate() == null ? null :
-                    Date.valueOf(student.getRegDate()));
-            pstmt.setLong(5, student.getParentId());
-            pstmt.setLong(6, student.getTeacherLesson());
-            pstmt.setLong(7, student.getId());
-            int resultSize = pstmt.executeUpdate();
-            log.info("resultSize={}", resultSize);
+            pstmt.setLong(3, student.getParentId());
+            pstmt.setLong(4, student.getTeacherLesson());
+            pstmt.setLong(5, student.getId());
+            pstmt.executeUpdate();
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("StudentRepository.update error : ", e);
         } finally {
             close(con, pstmt, null);
         }
@@ -243,10 +221,9 @@ public class StudentRepository extends AbstractRepository {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
             pstmt.setLong(1, id);
-            int resultSize = pstmt.executeUpdate();
-            log.info("resultSize={}", resultSize);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("StudentRepository.delete error : ", e);
         } finally {
             close(con, pstmt, null);
         }

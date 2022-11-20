@@ -40,7 +40,6 @@ public class TeacherService {
         try {
             save = loginRepository.save(login);
             saveTeacher = new Teacher();
-            saveTeacher.setLyceumId(1L);
             saveTeacher.setLoginId(form.getId());
             saveTeacher.setName(form.getName());
             saveTeacher.setPhone(form.getPhone());

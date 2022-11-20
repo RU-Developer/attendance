@@ -13,9 +13,6 @@ public class Teacher implements Serializable {
     @NotEmpty
     private String name;
 
-    private String belong;
     private String phone;
     private String loginId;
-
-    private Long lyceumId;
 }

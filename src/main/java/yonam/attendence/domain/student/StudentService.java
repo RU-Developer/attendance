@@ -27,14 +27,17 @@ public class StudentService {
     private final AttendanceRepository attendanceRepository;
 
     public Student findById(Long id) {
+        log.info("StudentService.findById id = {}", id);
         return studentRepository.findById(id);
     }
 
     public List<StudentParent> studentParentWithTeacherLesson(Long lesson) {
+        log.info("StudentService.studentParentWithTeacherLesson lesson = {}", lesson);
         return studentRepository.studentParentByTeacherLesson(lesson);
     }
 
     public void withdraw(Long studentId, Long lesson) {
+        log.info("StudentService.withdraw studentId = {}, lesson = {}", studentId, lesson);
         Student student = studentRepository.findById(studentId);
         if (student == null) {
             return;
@@ -60,6 +63,7 @@ public class StudentService {
     }
 
     public void updateStudentParent(StudentParent studentParent, Long lesson) {
+        log.info("StudentService.updateStudentParent lesson = {}", lesson);
         log.info("studentid = {}", studentParent.getStudent().getId());
         Student student = studentRepository.findById(studentParent.getStudent().getId());
         if (student == null) {
@@ -79,7 +83,6 @@ public class StudentService {
         }
 
         student.setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(studentParent.getStudent().getPhone()));
-        student.setTuition(studentParent.getStudent().getTuition());
         student.setName(studentParent.getStudent().getName());
 
         parent.setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(studentParent.getParent().getPhone()));
@@ -90,6 +93,7 @@ public class StudentService {
     }
 
     public StudentParent saveStudentParent(StudentParent studentParent) {
+        log.info("StudentService.saveStudentParent");
         log.info("student name = {}, parent name = {}", studentParent.getStudent().getName(), studentParent.getParent().getName());
         Parent parent = parentRepository.findByPhone(studentParent.getParent().getPhone());
 
@@ -116,7 +120,6 @@ public class StudentService {
         }
 
         if (flag) {
-            studentParent.getStudent().setRegDate(LocalDate.now()); //요청으로 온게 언제던간에 오늘로 변경(서버시간으로)
             Student student = studentRepository.save(studentParent.getStudent());
             log.info("student save = {}", student);
         }
@@ -125,6 +128,7 @@ public class StudentService {
     }
 
     public StudentTeacher findStudentTeacher(Long studentId, Long parentId) {
+        log.info("StudentService.findStudentTeacher studentId = {}, parentId = {}", studentId, parentId);
         Student student = studentRepository.findById(studentId);
         if (!Objects.equals(student.getParentId(), parentId)) {
             return null;

@@ -1,11 +1,9 @@
 package yonam.attendence.domain.student;
 
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.time.LocalDate;
 
 @Data
 public class Student implements Serializable {
@@ -17,14 +15,8 @@ public class Student implements Serializable {
     private String phone;
 
     @NotEmpty
-    private Long tuition;
-
-    @NotEmpty
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate regDate;
-
-    @NotEmpty
     private Long parentId;
 
-    @NotEmpty Long teacherLesson;
+    @NotEmpty
+    Long teacherLesson;
 }

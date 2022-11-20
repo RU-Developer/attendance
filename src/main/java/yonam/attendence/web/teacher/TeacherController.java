@@ -8,7 +8,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import yonam.attendence.domain.message.MessageForm;
 import yonam.attendence.domain.message.MessageResult;
 import yonam.attendence.domain.message.MessageService;
 import yonam.attendence.domain.message.ValidationForm;
@@ -17,7 +16,6 @@ import yonam.attendence.domain.teacher.TeacherAddForm;
 import yonam.attendence.domain.teacher.TeacherService;
 import yonam.attendence.domain.util.Util;
 import yonam.attendence.web.SessionConst;
-import yonam.attendence.web.parent.ParentLoginResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -32,31 +30,11 @@ public class TeacherController {
     private final TeacherService teacherService;
     private final MessageService messageService;
 
-    @GetMapping("/add")
-    public String addForm(@ModelAttribute("teacher") Teacher teacher) {
-        return "teachers/addTeacherForm";
-    }
-
-    @PostMapping("/add")
-    public String save(@Validated @ModelAttribute TeacherAddForm form, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return "teachers/addTeacherForm";
-        }
-
-        TeacherAddResult save = teacherService.save(form);
-        if (!save.isSuccess()) {
-            bindingResult.rejectValue("id", null,
-                    new TeacherAddResultConstToMessage().resolveMessage(save.getMessage()));
-            return "teachers/addTeacherForm";
-        }
-
-        return "redirect:/";
-    }
-
     @ResponseBody
     @PostMapping(path = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public TeacherAddResult saveAndroid(@Validated @RequestBody TeacherAddForm form, BindingResult bindingResult,
-                                            HttpServletRequest request) {
+    public TeacherAddResult save(@Validated @RequestBody TeacherAddForm form, BindingResult bindingResult,
+                                 HttpServletRequest request) {
+        log.info("TeacherController.save");
         log.info("id: {}, password: {}, phone: {}", form.getId(), form.getPassword(), form.getPhone());
         if (bindingResult.hasErrors()) {
             StringBuilder sb = new StringBuilder();
@@ -81,12 +59,14 @@ public class TeacherController {
     @ResponseBody
     @PostMapping(path = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public Teacher profile(HttpServletRequest request) {
+        log.info("TeacherController.profile");
         return (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
     }
 
     @ResponseBody
     @PostMapping(path = "/sendvalidation", produces = MediaType.APPLICATION_JSON_VALUE)
     public void sendValidation(@Validated @RequestBody PhoneValidationForm form) {
+        log.info("TeacherController.sendValidation");
         form.setPhone(Util.deleteSpecialSymbolsAtPhoneNumber(form.getPhone()));
         MessageResult messageResult = messageService.sendPhoneValidation(form.getPhone());
         log.info("sendvalidation result = {}", messageResult.isSuccess());
@@ -95,6 +75,7 @@ public class TeacherController {
     @ResponseBody
     @PostMapping(path = "/validation", produces = MediaType.APPLICATION_JSON_VALUE)
     public void validation(@Validated @RequestBody ValidationForm form, HttpServletRequest request) {
+        log.info("TeacherController.validation");
         String validatedPhone = messageService.phoneValidation(form.getValidationCode());
         if (validatedPhone == null) {
             validatedPhone = "";

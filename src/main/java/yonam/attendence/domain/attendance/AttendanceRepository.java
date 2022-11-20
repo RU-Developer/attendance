@@ -19,7 +19,7 @@ public class AttendanceRepository extends AbstractRepository {
     }
 
     public Attendance save(Attendance attendance) {
-        String sql = "INSERT INTO attendance(date_attendance, student_id, confirm) VALUES(?, ?, ?)";
+        String sql = "INSERT INTO attendance(date_attendance, student_id) VALUES(?, ?)";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -30,12 +30,11 @@ public class AttendanceRepository extends AbstractRepository {
             pstmt.setDate(1, attendance.getDateAttendance() == null ? null :
                     Date.valueOf(attendance.getDateAttendance()));
             pstmt.setLong(2, attendance.getStudentId());
-            pstmt.setString(3, attendance.getConfirm());
             pstmt.executeUpdate();
 
             return attendance;
         } catch (SQLException e) {
-            log.error("attendance db error", e);
+            log.error("AttendanceRepository.save() error : ", e);
         } finally {
             close(con, pstmt, null);
         }
@@ -62,11 +61,10 @@ public class AttendanceRepository extends AbstractRepository {
                 attendance.setDateAttendance(rs.getDate("date_attendance") == null ? null :
                         rs.getDate("date_attendance").toLocalDate());
                 attendance.setStudentId(rs.getLong("student_id"));
-                attendance.setConfirm(rs.getString("confirm"));
                 return attendance;
             }
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("AttendanceRepository.findById() error : ", e);
         } finally {
             close(con, pstmt, rs);
         }
@@ -95,13 +93,12 @@ public class AttendanceRepository extends AbstractRepository {
                 attendance.setDateAttendance(rs.getDate("date_attendance") == null ? null :
                         rs.getDate("date_attendance").toLocalDate());
                 attendance.setStudentId(rs.getLong("student_id"));
-                attendance.setConfirm(rs.getString("confirm"));
                 attendances.add(attendance);
             }
 
             return attendances;
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("AttendanceRepository.findByStudentId() error : ", e);
         } finally {
             close(con, pstmt, rs);
         }
@@ -130,11 +127,10 @@ public class AttendanceRepository extends AbstractRepository {
                 attendance.setDateAttendance(rs.getDate("date_attendance") == null ? null :
                         rs.getDate("date_attendance").toLocalDate());
                 attendance.setStudentId(rs.getLong("student_id"));
-                attendance.setConfirm(rs.getString("confirm"));
                 return attendance;
             }
         } catch (SQLException e) {
-            log.error("attendance find by dateAttendance db error", e);
+            log.error("AttendanceRepository.findByDateAttendanceWithStudentId() error : ", e);
         } finally {
             close(con, pstmt, rs);
         }
@@ -142,8 +138,28 @@ public class AttendanceRepository extends AbstractRepository {
         return null;
     }
 
+    public void updateDateAttendance(Attendance attendance) {
+        String sql = "UPDATE attendance SET date_attendance = ? WHERE id = ?";
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            con = getConnection();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setDate(1, attendance.getDateAttendance() == null ? null :
+                    Date.valueOf(attendance.getDateAttendance()));
+            pstmt.setLong(2, attendance.getId());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            log.error("AttendanceRepository.update() error : ", e);
+        } finally {
+            close(con, pstmt, null);
+        }
+    }
+
     public void update(Attendance attendance) {
-        String sql = "UPDATE attendance SET date_attendance = ?, student_id = ?, confirm = ? WHERE id = ?";
+        String sql = "UPDATE attendance SET date_attendance = ?, student_id = ? WHERE id = ?";
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -154,12 +170,10 @@ public class AttendanceRepository extends AbstractRepository {
             pstmt.setDate(1, attendance.getDateAttendance() == null ? null :
                     Date.valueOf(attendance.getDateAttendance()));
             pstmt.setLong(2, attendance.getStudentId());
-            pstmt.setString(3, attendance.getConfirm());
-            pstmt.setLong(4, attendance.getId());
-            int resultSize = pstmt.executeUpdate();
-            log.info("resultSize = {}", resultSize);
+            pstmt.setLong(3, attendance.getId());
+            pstmt.executeUpdate();
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("AttendanceRepository.update() error : ", e);
         } finally {
             close(con, pstmt, null);
         }
@@ -175,10 +189,9 @@ public class AttendanceRepository extends AbstractRepository {
             con = getConnection();
             pstmt = con.prepareStatement(sql);
             pstmt.setLong(1, id);
-            int resultSize = pstmt.executeUpdate();
-            log.info("resultSize = {}", resultSize);
+            pstmt.executeUpdate();
         } catch (SQLException e) {
-            log.error("db error", e);
+            log.error("AttendanceRepository.delete() error : ", e);
         } finally {
             close(con, pstmt, null);
         }
@@ -196,7 +209,7 @@ public class AttendanceRepository extends AbstractRepository {
             pstmt.setLong(1, studentId);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            log.error("delete By StudentId attendance db error");
+            log.error("AttendanceRepository.deleteByStudentId() error : ", e);
         } finally {
             close(con, pstmt, null);
         }

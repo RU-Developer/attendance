@@ -30,6 +30,7 @@ public class AttendanceController {
     @ResponseBody
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<StudentParent> attendance(HttpServletRequest request) {
+        log.info("AttendanceController.attendance");
         HttpSession session = request.getSession();
         Teacher loginTeacher = (Teacher) session.getAttribute(SessionConst.LOGIN_TEACHER);
         return studentService.studentParentWithTeacherLesson(loginTeacher.getLesson());
@@ -38,6 +39,7 @@ public class AttendanceController {
     @ResponseBody
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public void attendanceToday(@RequestBody List<Long> studentIdList, HttpServletRequest request) {
+        log.info("AttendanceController.attendanceToday");
         log.info("studentIdList: {}", studentIdList.toString());
         Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
         attendanceService.attendanceToday(studentIdList, loginTeacher.getLesson());
@@ -46,6 +48,7 @@ public class AttendanceController {
     @ResponseBody
     @PostMapping(path = "/leave", produces = MediaType.APPLICATION_JSON_VALUE)
     public void leaveAcademyToday(@RequestBody List<Long> studentIdList, HttpServletRequest request) {
+        log.info("AttendanceController.leaveAcademyToday");
         log.info("studentIdList: {}", studentIdList.toString());
         Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
         attendanceService.leaveAcademyToday(studentIdList, loginTeacher.getLesson());
@@ -54,6 +57,7 @@ public class AttendanceController {
     @ResponseBody
     @GetMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
     public AttendanceStudentResult studentForm(@RequestParam Long studentId, HttpServletRequest request) {
+        log.info("AttendanceController.studentForm");
         log.info("studentId={}", studentId);
         Student student = studentService.findById(studentId);
         Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
@@ -65,7 +69,8 @@ public class AttendanceController {
 
     @ResponseBody
     @PostMapping(path = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void studentUpdate(@RequestBody Attendance attendance, HttpServletRequest request) {
+    public void attendanceUpdate(@RequestBody Attendance attendance, HttpServletRequest request) {
+        log.info("AttendanceController.attendanceUpdate");
         log.info("studentId: {}", attendance.getStudentId());
         Student student = studentService.findById(attendance.getStudentId());
         Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
@@ -73,5 +78,14 @@ public class AttendanceController {
             return;
         }
         attendanceService.updateAttendance(attendance);
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/student/delete", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void attendanceDelete(@RequestParam Long attendanceId, HttpServletRequest request) {
+        log.info("AttendanceController.attendanceDelete");
+        log.info("attendanceId: {}", attendanceId);
+        Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
+        attendanceService.deleteAttendance(attendanceId, loginTeacher.getLesson());
     }
 }
