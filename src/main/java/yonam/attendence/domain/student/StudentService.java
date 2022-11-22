@@ -11,7 +11,6 @@ import yonam.attendence.domain.teacher.Teacher;
 import yonam.attendence.domain.teacher.TeacherRepository;
 import yonam.attendence.domain.util.Util;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,7 +70,7 @@ public class StudentService {
             return;
         }
 
-        if (Objects.equals(student.getTeacherLesson(), lesson)) {
+        if (!Objects.equals(student.getTeacherLesson(), lesson)) {
             return;
         }
 
