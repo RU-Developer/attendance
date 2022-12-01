@@ -82,7 +82,7 @@ public class AttendanceController {
 
     @ResponseBody
     @PostMapping(path = "/student/delete", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void attendanceDelete(@RequestParam Long attendanceId, HttpServletRequest request) {
+    public void attendanceDelete(@RequestBody Long attendanceId, HttpServletRequest request) {
         log.info("AttendanceController.attendanceDelete");
         log.info("attendanceId: {}", attendanceId);
         Teacher loginTeacher = (Teacher) request.getSession().getAttribute(SessionConst.LOGIN_TEACHER);
